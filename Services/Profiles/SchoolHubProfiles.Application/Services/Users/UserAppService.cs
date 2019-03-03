@@ -40,12 +40,17 @@ namespace SchoolHubProfiles.Application.Services.Users
         #region Action Methods
         public async Task<string> Login(string username = null, string emailAddress = null, string password = null)
         {
+            var token = string.Empty;
+
             var isUser = await _schoolHubDbContext.User.FirstOrDefaultAsync(x => x.Username == username || x.EmailAddress == emailAddress);
             if (isUser == null)
                 return null;
             if (!VerifyPasswordHash(password, isUser.PasswordHash, isUser.PasswordSalt))
                 return null;
-            var token = GenerateToken(isUser);
+            if (isUser.IsEmailConfirmed == false)
+                return null;
+
+            token = GenerateToken(isUser);
             return token;
         }
 
@@ -63,6 +68,8 @@ namespace SchoolHubProfiles.Application.Services.Users
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 IsAdmin = false,
+                IsEmailConfirmed = false,
+                IsUpdated = false,
             };
             await _schoolHubDbContext.User.AddAsync(newUser);
             await _schoolHubDbContext.SaveChangesAsync();
@@ -77,9 +84,16 @@ namespace SchoolHubProfiles.Application.Services.Users
         }
 
 
-        public Task<bool> DeleteUser(long Id)
+        public async Task<bool> DeleteUser(long Id)
         {
-            throw new NotImplementedException();
+            var delete = await _schoolHubDbContext.User.Where(s => s.Id == Id).FirstOrDefaultAsync();
+            if (delete != null)
+            {
+                _schoolHubDbContext.Remove(delete);
+                return true;
+            }  
+            return false;
+
         }
 
         public Task<IEnumerable<UserDto>> RetrieveAllUsers()
@@ -104,6 +118,23 @@ namespace SchoolHubProfiles.Application.Services.Users
                 return userDto;
             }
             return null;
+        }
+
+        public async Task UpdateUser(UpdateUserDto model)
+        {
+            var user = await _schoolHubDbContext.User.FindAsync(model.Id);
+            if(user != null)
+            {
+                user.Username = model.Username;
+                user.EmailAddress = model.EmailAddress;
+                user.UserType = model.UserType;
+                user.UpdatedOn = DateTime.UtcNow;
+                user.Password = model.Password;
+                user.IsUpdated = true;
+            }
+            _schoolHubDbContext.Entry(user).State = EntityState.Modified;
+            await _schoolHubDbContext.SaveChangesAsync();
+            await Task.CompletedTask;
         }
 
 

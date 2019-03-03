@@ -42,6 +42,17 @@ namespace SchoolHub.Notification.Services.Process
                                            .Replace("{emailAddress}", $"{response.EmailAddress}")
                                            .Replace("{password}", $"{response.Password}");
             }
+            else if(type == 2)
+            {
+                messageTitle = "Password Change";
+                templateResponse = template.Replace("{username}", $"{response.Username}");
+            }
+            else if (type == 3)
+            {
+                messageTitle = "Password Reset";
+                templateResponse = template.Replace("{username}", $"{response.Username}")
+                                           .Replace("{password}", $"{response.Password}");
+            }
             var sendToMailService = await _mailAppService.SendMail(messageTitle, response.EmailAddress, _settings.Username, templateResponse);
 
             return await Task.FromResult(true);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SchoolHubProfiles.Application.Services.Authentication;
 using SchoolHubProfiles.Application.Services.Mapping;
 using SchoolHubProfiles.Application.Services.Staffs;
 using SchoolHubProfiles.Application.Services.Users;
@@ -12,7 +13,8 @@ namespace SchoolHubProfiles.Application
             services.AddTransient<IUserAppService, UserAppService>();
             services.AddTransient<IMappingService, MappingService>();
             services.AddTransient<IStaffAppService, StaffAppService>();
-         
+            services.AddTransient<IAuthenticationAppService, AuthenticationAppService>();
+
 
             return services;
         }

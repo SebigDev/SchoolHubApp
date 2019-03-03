@@ -12,6 +12,7 @@ using SchoolHubProfiles.Core.Models.Qualifications;
 using SchoolHubProfiles.Core.Models.Staffs;
 using SchoolHub.Core.Extensions;
 using SchoolHub.Core.Enums;
+using SchoolHubProfiles.Core.Models.Mapping;
 
 namespace SchoolHubProfiles.Application.Services.Staffs
 {
@@ -144,6 +145,14 @@ namespace SchoolHubProfiles.Application.Services.Staffs
             };
             await _schoolHubDbContext.Qualification.AddAsync(qualification);
             await _schoolHubDbContext.SaveChangesAsync();
+
+            //TODO: Add To Mapp
+            var map = new StaffQualificationMap
+            {
+                Id = qualification.Id,
+                StaffId = qualification.StaffId
+            };
+            await _schoolHubDbContext.StaffQualificationMap.AddAsync(map);
             return qualification.Id;
         }
 

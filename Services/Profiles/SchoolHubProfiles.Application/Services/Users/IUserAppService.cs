@@ -12,7 +12,7 @@ namespace SchoolHubProfiles.Application.Services.Users
     {
         Task<long> InsertUser(CreateUserDto model);
         Task<string> Login(string username = null, string emailAddress = null, string password = null);
-       // Task<bool> UpdateUser(UpdateUserDto model);
+        Task UpdateUser(UpdateUserDto model);
         //Task<bool> UpdateStaff(UpdateStaffDto model);
         Task<bool> DeleteUser(long Id);
         Task<UserDto> RetrieveUser(long Id);

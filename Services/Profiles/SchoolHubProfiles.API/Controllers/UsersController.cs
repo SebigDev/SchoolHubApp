@@ -63,6 +63,45 @@ namespace SchoolHubProfiles.API.Controllers
 
         }
 
-      
+        [Route("[action]")]
+        [HttpPut]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> UpdateUser(UpdateUserDto update)
+        {
+            try
+            {
+                await _userAppService.UpdateUser(update);
+                return Ok("Updated Successfully");
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        [Route("[action]")]
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> DeleteUser(long Id)
+        {
+            try
+            {
+                var delete = await _userAppService.DeleteUser(Id);
+                if (delete == true)
+                {
+                    return Ok("Deleted Successfully");
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+        }
+
+
     }
 }

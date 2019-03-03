@@ -11,6 +11,7 @@ namespace SchoolHubProfiles.Core.Models.Users
             IsAdmin = false;
             RegisteredOn = DateTime.UtcNow;
             IsUpdated = false;
+            IsEmailConfirmed = false;
         }
         public long Id { get; set; }
         public string Username { get; set; }
@@ -23,6 +24,7 @@ namespace SchoolHubProfiles.Core.Models.Users
 
         public bool IsUpdated { get; set; }
 
+        public bool IsEmailConfirmed { get; set; }
         public DateTime RegisteredOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
     }

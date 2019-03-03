@@ -15,7 +15,16 @@ namespace SchoolHub.Notification.Services.Templates
                template = "<div style=\"padding: 5px; \"><b>Dear {username}</b>,<br/><br/> Your registration was successful. <br/><br/> Below are your Credentials" +
                "<br/> Email Address: <b>{emailAddress}</b><br/>Password: <b>{password}</b><br/><br/>Thanks for choosing this platform</div>";
             }
-
+           else if(notification == 2)
+            {
+                template = "<div style=\"padding: 5px; \"><b>Dear {username}</b>,<br/><br/> Your password change was successful.<br/><br/>" +
+                    "You will have to Login to update you profile<br/>Thanks for choosing this platform</div>";
+            }
+           else if(notification == 3)
+            {
+                template = "<div style=\"padding: 5px; \"><b>Dear {username}</b>,<br/><br/> Your reset was successful. <br/><br/> Below is your new Password" +
+              "<br/>Password: <b>{password}</b><br/><br/>Thanks for choosing this platform</div>";
+            }
             return await Task.FromResult(template);
         }
     }
