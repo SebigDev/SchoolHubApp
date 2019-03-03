@@ -41,12 +41,12 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpGet]
-        [ProducesResponseType(typeof(StaffDto), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> RetrieveStaffById(long Id)
+        [ProducesResponseType(typeof(StaffDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RetrieveStaffById(long staffId)
         {
             try
             {
-                var staff = await _staffAppService.RetriveStaffById(Id);
+                var staff = await _staffAppService.RetriveStaffById(staffId);
                 return Ok(staff);
             }
             catch (Exception ex)
@@ -58,12 +58,12 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<StaffDto>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> RetrieveStaffByStaffByUserType(int type)
+        [ProducesResponseType(typeof(IEnumerable<StaffDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RetrieveStaffByStaffByUserType(int userType)
         {
             try
             {
-                var staff = await _staffAppService.RetrieveStaffByStaffByUserType(type);
+                var staff = await _staffAppService.RetrieveStaffByStaffByUserType(userType);
                 return Ok(staff);
             }
             catch (Exception ex)
@@ -75,12 +75,46 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<StaffDto>), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(IEnumerable<StaffDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> RetrieveAllStaffs()
         {
             try
             {
                 var staff = await _staffAppService.RetrieveAllStaffs();
+                return Ok(staff);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        [ProducesResponseType(typeof(long), (int)HttpStatusCode.Created)]
+        public async Task<IActionResult> AddQualification([FromBody] AddQualificationDto model)
+        {
+            try
+            {
+                var staff = await _staffAppService.AddQualification(model);
+                return Ok(staff);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<QualificationDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetQualificationsByStaffId(long staffId)
+        {
+            try
+            {
+                var staff = await _staffAppService.GetQualificationsByStaffId(staffId);
                 return Ok(staff);
             }
             catch (Exception ex)

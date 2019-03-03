@@ -1,4 +1,5 @@
 ﻿using SchoolHubProfiles.Core.DTOs.Staffs;
+using SchoolHubProfiles.Core.Models.Qualifications;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,10 @@ namespace SchoolHubProfiles.Application.Services.Staffs
         Task<StaffDto> RetriveStaffById(long Id);
         Task<IEnumerable<StaffDto>> RetrieveStaffByStaffByUserType(int type);
         Task<IEnumerable<StaffDto>> RetrieveAllStaffs();
+
+        Task<int> AddQualification(AddQualificationDto model);
+
+        Task<IEnumerable<QualificationDto>> GetQualificationsByStaffId(long staffId);
 
     }
 }

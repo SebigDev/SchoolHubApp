@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolHubProfiles.Core.Models.Mapping;
+using SchoolHubProfiles.Core.Models.Qualifications;
 using SchoolHubProfiles.Core.Models.Staffs;
 using SchoolHubProfiles.Core.Models.Users;
 using System;
@@ -16,5 +17,7 @@ namespace SchoolHubProfiles.Core.Context
             public DbSet<User> User { get; set; }
             public DbSet<Staff> Staff { get; set; }
             public DbSet<StaffUserMap> StaffUserMap { get; set; }
+            public DbSet<Qualification> Qualification { get; set; }
+            public DbSet<StaffQualificationMap> StaffQualificationMap{ get; set; }
         }
 }

@@ -63,21 +63,6 @@ namespace SchoolHubProfiles.API.Controllers
 
         }
 
-        [Route("[action]")]
-        [HttpPost]
-        [ProducesResponseType(typeof(UserDto), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> CreateStaff([FromBody] CreateStaffDto model)
-        {
-            try
-            {
-                var staff = await _userAppService.InsertStaff(model);
-                return Ok(staff);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-        }
+      
     }
 }

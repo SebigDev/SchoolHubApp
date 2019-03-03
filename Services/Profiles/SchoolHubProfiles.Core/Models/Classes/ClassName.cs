@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SchoolHubMgt.Core.Models.Classes
+namespace SchoolHubProfiles.Core.Models.Classes
 {
    public class ClassName
     {

@@ -1,12 +1,8 @@
-﻿using SchoolHubProfiles.Core.Models.Staffs;
-using SchoolHubProfiles.Core.Models.Users;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace SchoolHubProfiles.Core.DTOs.Staffs
 {
-   public class UpdateStaffDto
+    public class UpdateStaffDto
     {
         public UpdateStaffDto()
         {
@@ -17,7 +13,7 @@ namespace SchoolHubProfiles.Core.DTOs.Staffs
         public string Firstname { get; set; }
         public string Middlename { get; set; }
         public string Lastname { get; set; }
-        public List<Qualification> Qualification { get; set; }
+    
        
         public DateTime DateEmployed { get; set; }
 

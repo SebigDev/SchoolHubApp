@@ -8,6 +8,7 @@ using SchoolHubProfiles.Application.Services.Mapping;
 using SchoolHubProfiles.Application.Services.Users;
 using SchoolHubProfiles.Core.Context;
 using SchoolHubProfiles.Core.DTOs.Staffs;
+using SchoolHubProfiles.Core.Models.Qualifications;
 using SchoolHubProfiles.Core.Models.Staffs;
 
 namespace SchoolHubProfiles.Application.Services.Staffs
@@ -118,6 +119,38 @@ namespace SchoolHubProfiles.Application.Services.Staffs
 
         }
 
+
+        public async Task<int> AddQualification(AddQualificationDto model)
+        {
+            Qualification qualification;
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            qualification = new Qualification
+            {
+                Institution = model.Institution,
+                Certficate = model.Certficate,
+                DateObtained = model.DateObtained
+            };
+            await _schoolHubDbContext.Qualification.AddAsync(qualification);
+            await _schoolHubDbContext.SaveChangesAsync();
+            return qualification.Id;
+        }
+
+        public async Task<IEnumerable<QualificationDto>> GetQualificationsByStaffId(long staffId)
+        {
+            if (staffId < 1)
+                throw new ArgumentNullException(nameof(staffId));
+            var staffQuals = new List<QualificationDto>();
+            var quals = await _schoolHubDbContext.Qualification.Where(x => x.StaffId == staffId).ToListAsync();
+            staffQuals.AddRange(quals.OrderByDescending(s => s.DateObtained).Select(x => new QualificationDto()
+            {
+                Institution = x.Institution,
+                Certficate = x.Certficate,
+                DateObtained = x.DateObtained
+            }));
+            return staffQuals;
+        }
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
@@ -151,6 +184,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
             // TODO: uncomment the following line if the finalizer is overridden above.
             GC.SuppressFinalize(this);
         }
+
         #endregion
     }
 }

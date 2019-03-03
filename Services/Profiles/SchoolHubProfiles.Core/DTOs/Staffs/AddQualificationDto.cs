@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SchoolHubMgt.Core.Models.Qualifications
+namespace SchoolHubProfiles.Core.DTOs.Staffs
 {
-    public class Qualification
+    public class AddQualificationDto
     {
-        public int Id { get; set; }
         public string Institution { get; set; }
         public string Certficate { get; set; }
         public DateTime DateObtained { get; set; }
-
     }
 }
