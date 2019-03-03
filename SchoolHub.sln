@@ -3,9 +3,80 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{FCD08161-9E8C-4D5E-96C0-9DC0A4C667AF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{0AB4CF3B-E3F0-498B-806E-D039C8F864F3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Profiles", "Profiles", "{E05383D5-7D45-4235-9222-BBBDB0F1F649}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Management", "Management", "{2FA507B1-6744-42CE-88F0-EEF14748C47A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolHub.Core", "BuildingBlocks\SchoolHub.Core\SchoolHub.Core.csproj", "{3B87FAA4-C4D4-4FE9-B33C-40C30A936406}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolHub.Data", "BuildingBlocks\SchoolHub.Data\SchoolHub.Data.csproj", "{A5F7CE5C-0506-4768-A52B-61AFB3D14ACE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolHubProfiles.Application", "Services\Profiles\SchoolHubProfiles.Application\SchoolHubProfiles.Application.csproj", "{D9037B3A-61F4-4264-A8BB-A38DE0E17F63}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolHubProfiles.API", "Services\Profiles\SchoolHubProfiles.API\SchoolHubProfiles.API.csproj", "{12D176DB-E471-411C-9A2B-F9417F32E0CB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A5F7CE5C-0506-4768-A52B-61AFB3D14ACE} = {A5F7CE5C-0506-4768-A52B-61AFB3D14ACE}
+		{3B87FAA4-C4D4-4FE9-B33C-40C30A936406} = {3B87FAA4-C4D4-4FE9-B33C-40C30A936406}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolHub.Notification", "BuildingBlocks\SchoolHub.Notification\SchoolHub.Notification.csproj", "{F5AD4312-A0E7-4845-87AF-EF1E8C44CEC4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolHubProfiles.Core", "Services\Profiles\SchoolHubProfiles.Core\SchoolHubProfiles.Core.csproj", "{ACDFE47D-BCB1-46A9-B7B4-0438C37D4AB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolHubMgt.Core", "Services\Management\SchoolHubMgt.Core\SchoolHubMgt.Core\SchoolHubMgt.Core.csproj", "{F9EDE46F-83C6-4BAC-AFE9-4E529AEF48D7}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3B87FAA4-C4D4-4FE9-B33C-40C30A936406}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B87FAA4-C4D4-4FE9-B33C-40C30A936406}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B87FAA4-C4D4-4FE9-B33C-40C30A936406}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B87FAA4-C4D4-4FE9-B33C-40C30A936406}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5F7CE5C-0506-4768-A52B-61AFB3D14ACE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5F7CE5C-0506-4768-A52B-61AFB3D14ACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5F7CE5C-0506-4768-A52B-61AFB3D14ACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5F7CE5C-0506-4768-A52B-61AFB3D14ACE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9037B3A-61F4-4264-A8BB-A38DE0E17F63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9037B3A-61F4-4264-A8BB-A38DE0E17F63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9037B3A-61F4-4264-A8BB-A38DE0E17F63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9037B3A-61F4-4264-A8BB-A38DE0E17F63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12D176DB-E471-411C-9A2B-F9417F32E0CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12D176DB-E471-411C-9A2B-F9417F32E0CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12D176DB-E471-411C-9A2B-F9417F32E0CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12D176DB-E471-411C-9A2B-F9417F32E0CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5AD4312-A0E7-4845-87AF-EF1E8C44CEC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5AD4312-A0E7-4845-87AF-EF1E8C44CEC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5AD4312-A0E7-4845-87AF-EF1E8C44CEC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5AD4312-A0E7-4845-87AF-EF1E8C44CEC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACDFE47D-BCB1-46A9-B7B4-0438C37D4AB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACDFE47D-BCB1-46A9-B7B4-0438C37D4AB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACDFE47D-BCB1-46A9-B7B4-0438C37D4AB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACDFE47D-BCB1-46A9-B7B4-0438C37D4AB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9EDE46F-83C6-4BAC-AFE9-4E529AEF48D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9EDE46F-83C6-4BAC-AFE9-4E529AEF48D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9EDE46F-83C6-4BAC-AFE9-4E529AEF48D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9EDE46F-83C6-4BAC-AFE9-4E529AEF48D7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E05383D5-7D45-4235-9222-BBBDB0F1F649} = {0AB4CF3B-E3F0-498B-806E-D039C8F864F3}
+		{2FA507B1-6744-42CE-88F0-EEF14748C47A} = {0AB4CF3B-E3F0-498B-806E-D039C8F864F3}
+		{3B87FAA4-C4D4-4FE9-B33C-40C30A936406} = {FCD08161-9E8C-4D5E-96C0-9DC0A4C667AF}
+		{A5F7CE5C-0506-4768-A52B-61AFB3D14ACE} = {FCD08161-9E8C-4D5E-96C0-9DC0A4C667AF}
+		{D9037B3A-61F4-4264-A8BB-A38DE0E17F63} = {E05383D5-7D45-4235-9222-BBBDB0F1F649}
+		{12D176DB-E471-411C-9A2B-F9417F32E0CB} = {E05383D5-7D45-4235-9222-BBBDB0F1F649}
+		{F5AD4312-A0E7-4845-87AF-EF1E8C44CEC4} = {FCD08161-9E8C-4D5E-96C0-9DC0A4C667AF}
+		{ACDFE47D-BCB1-46A9-B7B4-0438C37D4AB8} = {E05383D5-7D45-4235-9222-BBBDB0F1F649}
+		{F9EDE46F-83C6-4BAC-AFE9-4E529AEF48D7} = {2FA507B1-6744-42CE-88F0-EEF14748C47A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B17EBE66-7588-45B9-AB90-0996EAA50715}
