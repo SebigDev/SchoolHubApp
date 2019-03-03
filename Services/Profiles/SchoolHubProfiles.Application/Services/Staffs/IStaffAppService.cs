@@ -10,8 +10,8 @@ namespace SchoolHubProfiles.Application.Services.Staffs
    public interface IStaffAppService : IDisposable
     {
         Task<long> InsertStaff(CreateStaffDto model);
-        Task<StaffDto> RetriveStaffById(long Id);
-        Task<IEnumerable<StaffDto>> RetrieveStaffByStaffByUserType(int type);
+        Task<StaffQualificationResponse> RetriveStaffById(long Id);
+        Task<IEnumerable<StaffDto>> RetrieveStaffByStaffByUserType(string type);
         Task<IEnumerable<StaffDto>> RetrieveAllStaffs();
 
         Task<int> AddQualification(AddQualificationDto model);

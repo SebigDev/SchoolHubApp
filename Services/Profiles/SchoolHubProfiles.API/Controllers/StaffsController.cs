@@ -41,12 +41,14 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpGet]
-        [ProducesResponseType(typeof(StaffDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(StaffQualificationResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> RetrieveStaffById(long staffId)
         {
             try
             {
                 var staff = await _staffAppService.RetriveStaffById(staffId);
+                if (staff == null)
+                    return NotFound();
                 return Ok(staff);
             }
             catch (Exception ex)
@@ -59,7 +61,7 @@ namespace SchoolHubProfiles.API.Controllers
         [Route("[action]")]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<StaffDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> RetrieveStaffByStaffByUserType(int userType)
+        public async Task<IActionResult> RetrieveStaffByStaffByUserType(string userType)
         {
             try
             {

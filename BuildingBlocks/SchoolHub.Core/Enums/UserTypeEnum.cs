@@ -11,20 +11,11 @@ namespace SchoolHub.Core.Enums
         [Description("Admin")]
         Admin = 1,
 
-        [Description("Staff")]
-        Staff,
-
-        [Description("HeadMaster/Mistress")]
+        [Description("HeadMaster")]
         HeadMasterMistress,
 
-        [Description("Form/Head Teacher")]
-        FormHeadTeacher,
-
-        [Description("Student")]
-        Student,
-
-        [Description("Pupil")]
-        Pupil,
+        [Description("Form Teacher")]
+        FormHeadTeacher
 
     }
 }

@@ -10,6 +10,8 @@ using SchoolHubProfiles.Core.Context;
 using SchoolHubProfiles.Core.DTOs.Staffs;
 using SchoolHubProfiles.Core.Models.Qualifications;
 using SchoolHubProfiles.Core.Models.Staffs;
+using SchoolHub.Core.Extensions;
+using SchoolHub.Core.Enums;
 
 namespace SchoolHubProfiles.Application.Services.Staffs
 {
@@ -46,8 +48,8 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 Lastname = model.Lastname,
                 DateOfBirth = model.DateOfBirth,
                 DateEmployed = model.DateEmployed,
-                Gender = (int)model.Gender,
-                UserType = (int)model.UserType,
+                Gender = model.Gender.GetDescription(),
+                UserType = model.UserType.GetDescription(),
             };
             await _schoolHubDbContext.Staff.AddAsync(staff);
             await _schoolHubDbContext.SaveChangesAsync();
@@ -70,14 +72,14 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 Lastname = s.Lastname,
                 Age = s.Age,
                 DateEmployed = s.DateEmployed,
-                Gender = (int)s.Gender,
+                Gender = s.UserType,
                 IsActive = s.IsActive,
                 IsUpdate = s.IsUpdate,
             }));
             return staffDto;
         }
 
-        public async Task<IEnumerable<StaffDto>> RetrieveStaffByStaffByUserType(int type)
+        public async Task<IEnumerable<StaffDto>> RetrieveStaffByStaffByUserType(string type)
         {
             var staffs = await _schoolHubDbContext.Staff.Where(x => x.UserType == type).ToListAsync();
             var staffDto = new List<StaffDto>();
@@ -89,14 +91,15 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 Lastname = s.Lastname,
                 Age = s.Age,
                 DateEmployed = s.DateEmployed,
-                Gender = (int)s.Gender,
+                Gender = s.Gender,
+                UserType = s.UserType,
                 IsActive = s.IsActive,
                 IsUpdate = s.IsUpdate,
             }));
             return staffDto;
         }
 
-        public async Task<StaffDto> RetriveStaffById(long Id)
+        public async Task<StaffQualificationResponse> RetriveStaffById(long Id)
         {
             StaffDto staffDto;
 
@@ -111,11 +114,19 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 Lastname = staff.Lastname,
                 Age = staff.Age,
                 DateEmployed = staff.DateEmployed,
-                Gender = (int)staff.Gender,
+                Gender = staff.Gender,
                 IsActive = staff.IsActive,
                 IsUpdate = staff.IsUpdate,
+                UserType = staff.UserType,
             };
-            return staffDto;
+            var qualDto = await GetQualificationsByStaffId(Id);
+            var response = new StaffQualificationResponse
+            {
+                Staff = staffDto,
+                Qualification = qualDto.ToList()
+            };
+
+            return response;
 
         }
 

@@ -37,13 +37,13 @@ namespace SchoolHubProfiles.Core.Models.Staffs
 
         public bool IsUpdate { get; set; }
 
-        public int Gender { get; set; }
+        public string Gender { get; set; }
 
         public DateTime DateOfRegistration { get; set; }
 
         public DateTime? DateUpdated { get; set; }
 
-        public int UserType { get; set; }
+        public string UserType { get; set; }
     }
 
 }
