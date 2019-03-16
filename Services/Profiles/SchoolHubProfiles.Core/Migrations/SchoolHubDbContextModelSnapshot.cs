@@ -19,6 +19,57 @@ namespace SchoolHubProfiles.Core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("SchoolHubProfiles.Core.Models.Classes.ClassName", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Category");
+
+                    b.Property<string>("ClassCode");
+
+                    b.Property<DateTime?>("CreatedOn");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClassName");
+                });
+
+            modelBuilder.Entity("SchoolHubProfiles.Core.Models.Mapping.ClassSubjectMap", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("ClassId");
+
+                    b.Property<DateTime?>("MappedOn");
+
+                    b.Property<long>("SubjectId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClassSubjectMap");
+                });
+
+            modelBuilder.Entity("SchoolHubProfiles.Core.Models.Mapping.StaffClassMap", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("ClassId");
+
+                    b.Property<long>("StaffId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StaffClassMap");
+                });
+
             modelBuilder.Entity("SchoolHubProfiles.Core.Models.Mapping.StaffQualificationMap", b =>
                 {
                     b.Property<int>("Id")
@@ -47,6 +98,23 @@ namespace SchoolHubProfiles.Core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StaffUserMap");
+                });
+
+            modelBuilder.Entity("SchoolHubProfiles.Core.Models.Mapping.StudentClassMap", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("ClassId");
+
+                    b.Property<DateTime>("DateMapped");
+
+                    b.Property<long>("StudentId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StudentClassMap");
                 });
 
             modelBuilder.Entity("SchoolHubProfiles.Core.Models.Qualifications.Qualification", b =>
@@ -86,7 +154,7 @@ namespace SchoolHubProfiles.Core.Migrations
 
                     b.Property<string>("Firstname");
 
-                    b.Property<string>("Gender");
+                    b.Property<int>("Gender");
 
                     b.Property<bool?>("IsActive");
 
@@ -98,11 +166,61 @@ namespace SchoolHubProfiles.Core.Migrations
 
                     b.Property<long>("UserId");
 
-                    b.Property<string>("UserType");
+                    b.Property<int>("UserType");
 
                     b.HasKey("Id");
 
                     b.ToTable("Staff");
+                });
+
+            modelBuilder.Entity("SchoolHubProfiles.Core.Models.Students.Student", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Age");
+
+                    b.Property<DateTime>("DateOfBirth");
+
+                    b.Property<DateTime>("DateOfRegistration");
+
+                    b.Property<DateTime?>("DateUpdated");
+
+                    b.Property<string>("Firstname");
+
+                    b.Property<string>("Gender");
+
+                    b.Property<bool?>("IsActive");
+
+                    b.Property<bool>("IsUpdate");
+
+                    b.Property<string>("Lastname");
+
+                    b.Property<string>("Middlename");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Student");
+                });
+
+            modelBuilder.Entity("SchoolHubProfiles.Core.Models.Subjects.Subject", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("CreatedBy");
+
+                    b.Property<DateTime?>("CreatedOn");
+
+                    b.Property<string>("SubjectCode");
+
+                    b.Property<string>("SubjectName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subject");
                 });
 
             modelBuilder.Entity("SchoolHubProfiles.Core.Models.Users.User", b =>

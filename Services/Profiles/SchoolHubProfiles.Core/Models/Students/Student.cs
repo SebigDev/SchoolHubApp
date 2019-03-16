@@ -38,7 +38,7 @@ namespace SchoolHubProfiles.Core.Models.Students
 
         public bool IsUpdate { get; set; }
 
-        public int Gender { get; set; }
+        public string Gender { get; set; }
 
         public DateTime DateOfRegistration { get; set; }
 

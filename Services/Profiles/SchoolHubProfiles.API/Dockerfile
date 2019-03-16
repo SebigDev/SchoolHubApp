@@ -2,21 +2,8 @@
 #For more information, please see https://aka.ms/containercompat
 
 FROM microsoft/dotnet:2.1-aspnetcore-runtime-nanoserver-1803 AS base
-WORKDIR /app
+WORKDIR /publish
 EXPOSE 80
 
-FROM microsoft/dotnet:2.1-sdk-nanoserver-1803 AS build
-WORKDIR /src
-COPY ["SchoolHubProfiles.API/SchoolHubProfiles.API.csproj", "SchoolHubProfiles.API/"]
-RUN dotnet restore "SchoolHubProfiles.API/SchoolHubProfiles.API.csproj"
-COPY . .
-WORKDIR "/src/SchoolHubProfiles.API"
-RUN dotnet build "SchoolHubProfiles.API.csproj" -c Release -o /app
-
-FROM build AS publish
-RUN dotnet publish "SchoolHubProfiles.API.csproj" -c Release -o /app
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app .
+COPY ./publish /publish
 ENTRYPOINT ["dotnet", "SchoolHubProfiles.API.dll"]

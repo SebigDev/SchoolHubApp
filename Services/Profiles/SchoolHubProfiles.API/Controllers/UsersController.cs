@@ -25,12 +25,16 @@ namespace SchoolHubProfiles.API.Controllers
         
         [Route("[action]")]
         [HttpPost]
-        [ProducesResponseType(typeof(CreateUserDto),(int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(long),(int)HttpStatusCode.Created)]
         public async Task<IActionResult> Register([FromBody] CreateUserDto model)
         {
             try
             {
                 var userId = await _userAppService.InsertUser(model);
+                if(userId < 1)
+                {
+                    return BadRequest();
+                }
                 return Ok($"User with the Id of {userId} created successfully");
             }
             catch (Exception ex)
@@ -43,17 +47,25 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(UserLoginResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Login(string username, string email, string password)
         {
             try
             {
-                var login = await _userAppService.Login(username,email,password);
-                if(login != null)
+                UserLoginResponse loginResponse;
+
+                var nUser = await _userAppService.Login(username,email,password);
+                if (nUser == null)
+                    return Unauthorized();
+                var token = await _userAppService.GenerateToken(nUser);
+                loginResponse = new UserLoginResponse
                 {
-                    return Ok(login);
-                }
-                return BadRequest();
+                    Success = true,
+                    Token = token,
+                    UserId = nUser.Id
+                };
+                return Ok(loginResponse);
+                
             }
             catch (Exception ex)
             {
@@ -70,8 +82,12 @@ namespace SchoolHubProfiles.API.Controllers
         {
             try
             {
-                await _userAppService.UpdateUser(update);
-                return Ok("Updated Successfully");
+               var isUpdated = await _userAppService.UpdateUser(update);
+                if(isUpdated == false)
+                {
+                    return BadRequest();
+                }
+                return Ok(isUpdated);
             }
             catch (Exception ex)
             {
@@ -100,6 +116,62 @@ namespace SchoolHubProfiles.API.Controllers
                 throw ex;
             }
 
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        [ProducesResponseType(typeof(UserDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RetrieveUserByEmail(string email)
+        {
+            try
+            {
+                var user = await _userAppService.GetUserByEmailAddress(email);
+                if (user == null)
+                    return BadRequest();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        [ProducesResponseType(typeof(UserDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RetrieveUserById(long Id)
+        {
+            try
+            {
+                var user = await _userAppService.RetrieveUser(Id);
+                if (user == null)
+                    return BadRequest();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<UserDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RetrieveAllUsers()
+        {
+            try
+            {
+                var user = await _userAppService.RetrieveAllUsers();
+                if (user == null)
+                    return BadRequest();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 

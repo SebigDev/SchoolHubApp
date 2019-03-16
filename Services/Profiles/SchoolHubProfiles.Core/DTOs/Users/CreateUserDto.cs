@@ -12,5 +12,9 @@ namespace SchoolHubProfiles.Core.DTOs.Users
         public string Password { get; set; }
         public bool? IsAdmin { get; set; }
 
+        public bool? IsEmailConfirmed { get; set; }
+
+        public UserTypeEnum UserType { get; set; }
+
     }
 }

@@ -8,10 +8,8 @@ namespace SchoolHubProfiles.Core.Models.Users
     {
         public User()
         {
-            IsAdmin = false;
             RegisteredOn = DateTime.UtcNow;
-            IsUpdated = false;
-            IsEmailConfirmed = false;
+           
         }
         public long Id { get; set; }
         public string Username { get; set; }

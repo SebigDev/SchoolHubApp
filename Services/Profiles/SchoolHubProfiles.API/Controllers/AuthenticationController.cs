@@ -24,11 +24,15 @@ namespace SchoolHubProfiles.API.Controllers
         [Route("[action]")]
         [HttpPut]
         [ProducesResponseType(typeof(AuthResponse), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> ChangePassword(string email, string password)
+        public async Task<IActionResult> ChangePassword(string email, string oldPassword, string newPassword)
         {
             try
             {
-                var pwdChange = await _authenticationAppService.ChangePassword(email, password);
+                var pwdChange = await _authenticationAppService.ChangePassword(email, oldPassword,newPassword);
+                if(pwdChange == null)
+                {
+                    return BadRequest();
+                }
                 return Ok(pwdChange);
             }
             catch (Exception ex)
@@ -44,9 +48,11 @@ namespace SchoolHubProfiles.API.Controllers
             try
             {
                 var pwdReset = await _authenticationAppService.ResetPassword(request);
-                if(pwdReset == true)
-                   return Ok(pwdReset);
-                return BadRequest();
+                if(pwdReset == false)
+                {
+                    return BadRequest();
+                }
+                return Ok(pwdReset);
             }
             catch (Exception ex)
             {

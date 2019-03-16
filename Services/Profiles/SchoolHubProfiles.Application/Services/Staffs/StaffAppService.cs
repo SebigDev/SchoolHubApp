@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SchoolHub.Core.Enums;
+using SchoolHub.Core.Extensions;
 using SchoolHubProfiles.Application.Services.Mapping;
 using SchoolHubProfiles.Application.Services.Users;
 using SchoolHubProfiles.Core.Context;
 using SchoolHubProfiles.Core.DTOs.Staffs;
+using SchoolHubProfiles.Core.Models.Mapping;
 using SchoolHubProfiles.Core.Models.Qualifications;
 using SchoolHubProfiles.Core.Models.Staffs;
-using SchoolHub.Core.Extensions;
-using SchoolHub.Core.Enums;
-using SchoolHubProfiles.Core.Models.Mapping;
+using SchoolHubProfiles.Core.Models.Users;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SchoolHubProfiles.Application.Services.Staffs
 {
@@ -41,23 +41,57 @@ namespace SchoolHubProfiles.Application.Services.Staffs
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
             var user = await _userAppService.RetrieveUser(model.UserId);
-            staff = new Staff
+            var checkStaff = await RetriveStaffByUserId(model.UserId);
+            if(checkStaff != null)
             {
-                UserId = user.Id,
-                Firstname = model.Firstname,
-                Middlename = model.Middlename,
-                Lastname = model.Lastname,
-                DateOfBirth = model.DateOfBirth,
-                DateEmployed = model.DateEmployed,
-                Gender = model.Gender.GetDescription(),
-                UserType = model.UserType.GetDescription(),
-            };
-            await _schoolHubDbContext.Staff.AddAsync(staff);
-            await _schoolHubDbContext.SaveChangesAsync();
+                return 0;
+            }
+            else
+            {
+                staff = new Staff
+                {
+                    UserId = user.Id,
+                    Firstname = model.Firstname,
+                    Middlename = model.Middlename,
+                    Lastname = model.Lastname,
+                    DateOfBirth = model.DateOfBirth,
+                    DateEmployed = model.DateEmployed,
+                    Gender =  model.Gender,
+                    UserType = model.UserType,
+                    IsUpdate = true,
+                    IsActive = true,
+                };
+                await _schoolHubDbContext.Staff.AddAsync(staff);
+                await _schoolHubDbContext.SaveChangesAsync();
+
+                var nUser = await _schoolHubDbContext.User.Where(s => s.Id == user.Id).FirstOrDefaultAsync();
+                if(nUser != null)
+                {
+                    nUser.IsUpdated = true;
+                };
+                 _schoolHubDbContext.Entry(nUser).State = EntityState.Modified;
+                await _schoolHubDbContext.SaveChangesAsync();
+            }
 
             //INsert into UserStaffMap
             await _mappingService.MapStaffUser(staff.UserId, staff.Id);
             return await Task.FromResult(staff.Id);
+        }
+
+        public async Task<bool> UpdateStaff(StaffDto update)
+        {
+            var retrieveStaff = RetriveStaffById(update.Id).Result.Staff;
+            if(retrieveStaff != null)
+            {
+                retrieveStaff.Id = update.Id;
+                retrieveStaff.Firstname = update.Firstname;
+                retrieveStaff.Middlename = update.Middlename;
+                retrieveStaff.Lastname = update.Lastname;
+                retrieveStaff.IsUpdate = true;
+            }
+            _schoolHubDbContext.Entry(retrieveStaff).State = EntityState.Modified;
+            await _schoolHubDbContext.SaveChangesAsync();
+            return true;
         }
 
         public async Task<IEnumerable<StaffDto>> RetrieveAllStaffs()
@@ -67,22 +101,23 @@ namespace SchoolHubProfiles.Application.Services.Staffs
 
             staffDto.AddRange(allStaffs.OrderBy(x => x.DateEmployed).Select(s => new StaffDto()
             {
-                UserId = s.Id,
+                Id = s.Id,
+                UserId = s.UserId,
                 Firstname = s.Firstname,
                 Middlename = s.Middlename,
                 Lastname = s.Lastname,
                 Age = s.Age,
                 DateEmployed = s.DateEmployed,
-                Gender = s.UserType,
+                Gender = s.Gender.GetDescription(),
                 IsActive = s.IsActive,
                 IsUpdate = s.IsUpdate,
             }));
             return staffDto;
         }
 
-        public async Task<IEnumerable<StaffDto>> RetrieveStaffByStaffByUserType(string type)
+        public async Task<IEnumerable<StaffDto>> RetrieveStaffByUserType(int type)
         {
-            var staffs = await _schoolHubDbContext.Staff.Where(x => x.UserType == type).ToListAsync();
+            var staffs = await _schoolHubDbContext.Staff.Where(x => (int)(x.UserType) == type).ToListAsync();
             var staffDto = new List<StaffDto>();
             staffDto.AddRange(staffs.OrderBy(x => x.DateEmployed).Select(s => new StaffDto()
             {
@@ -92,8 +127,8 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 Lastname = s.Lastname,
                 Age = s.Age,
                 DateEmployed = s.DateEmployed,
-                Gender = s.Gender,
-                UserType = s.UserType,
+                Gender = s.Gender.GetDescription(),
+                UserType = s.UserType.GetDescription(),
                 IsActive = s.IsActive,
                 IsUpdate = s.IsUpdate,
             }));
@@ -109,18 +144,50 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 return null;
             staffDto = new StaffDto
             {
+                Id = staff.Id,
                 UserId = staff.Id,
                 Firstname = staff.Firstname,
                 Middlename = staff.Middlename,
                 Lastname = staff.Lastname,
                 Age = staff.Age,
                 DateEmployed = staff.DateEmployed,
-                Gender = staff.Gender,
+                Gender = staff.Gender.GetDescription(),
                 IsActive = staff.IsActive,
                 IsUpdate = staff.IsUpdate,
-                UserType = staff.UserType,
+                UserType = staff.UserType.GetDescription(),
             };
             var qualDto = await GetQualificationsByStaffId(Id);
+            var response = new StaffQualificationResponse
+            {
+                Staff = staffDto,
+                Qualification = qualDto.ToList()
+            };
+
+            return response;
+
+        }
+
+        public async Task<StaffQualificationResponse> RetriveStaffByUserId(long userId)
+        {
+            StaffDto staffDto;
+
+            var staff = await _schoolHubDbContext.Staff.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (staff == null)
+                return null;
+            staffDto = new StaffDto
+            {
+                UserId = staff.Id,
+                Firstname = staff.Firstname,
+                Middlename = staff.Middlename,
+                Lastname = staff.Lastname,
+                Age = staff.Age,
+                DateEmployed = staff.DateEmployed,
+                Gender = staff.Gender.GetDescription(),
+                IsActive = staff.IsActive,
+                IsUpdate = staff.IsUpdate,
+                UserType = staff.UserType.GetDescription(),
+            };
+            var qualDto = await GetQualificationsByStaffId(staff.Id);
             var response = new StaffQualificationResponse
             {
                 Staff = staffDto,

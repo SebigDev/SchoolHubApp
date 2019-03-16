@@ -8,7 +8,19 @@ namespace SchoolHubProfiles.Application.Services.Authentication
 {
     public interface IAuthenticationAppService : IDisposable
     {
-        Task<AuthResponse> ChangePassword(string email, string password);
+        /// <summary>
+        /// Password Change
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
+        Task<AuthResponse> ChangePassword(string email, string oldPassword, string newPassword);
+        /// <summary>
+        /// Resets a user password
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         Task<bool> ResetPassword(ResetPasswordRequest request);
     }
 }

@@ -19,6 +19,8 @@ namespace SchoolHubProfiles.API
 {
     public class Startup
     {
+        private const string _defaultCorsPolicyName = "localhost";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -33,7 +35,20 @@ namespace SchoolHubProfiles.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+            services.AddSingleton(p => Configuration);
+
+            // Configure CORS for angular2 UI
+            services.AddCors(options =>
+            {
+                options.AddPolicy(_defaultCorsPolicyName, p =>
+                {
+                    p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
 
             //Add DbContext
             services.AddDbContext<SchoolHubDbContext>(conn =>
@@ -43,6 +58,7 @@ namespace SchoolHubProfiles.API
             //Add Mail
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddOptions();
+
             //Notification Services
             services.AddSchoolHubNotification();
             services.AddSchoolHubProfileApplication();
@@ -54,12 +70,22 @@ namespace SchoolHubProfiles.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+
+            app.UseCors(_defaultCorsPolicyName);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseMvc();
+
+            app.UseCors(builder => builder.AllowAnyHeader()
+                                    .AllowAnyMethod()
+                                    .AllowAnyOrigin()
+                                    .AllowCredentials());
+
+            app.UseHttpsRedirection();
 
             // Middleware  
             if (env.IsDevelopment())

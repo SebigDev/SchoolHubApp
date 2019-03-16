@@ -6,6 +6,7 @@ namespace SchoolHubProfiles.Core.DTOs.Staffs
 {
     public class StaffDto
     {
+        public long Id { get; set; }
         public long UserId { get; set; }
         public string Firstname { get; set; }
         public string Middlename { get; set; }

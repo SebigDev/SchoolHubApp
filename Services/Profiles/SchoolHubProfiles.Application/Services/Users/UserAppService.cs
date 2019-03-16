@@ -4,9 +4,7 @@ using SchoolHub.Core.Enums;
 using SchoolHub.Notification.Services.Process;
 using SchoolHubProfiles.Application.Services.Mapping;
 using SchoolHubProfiles.Core.Context;
-using SchoolHubProfiles.Core.DTOs.Staffs;
 using SchoolHubProfiles.Core.DTOs.Users;
-using SchoolHubProfiles.Core.Models.Staffs;
 using SchoolHubProfiles.Core.Models.Users;
 using System;
 using System.Collections.Generic;
@@ -38,49 +36,50 @@ namespace SchoolHubProfiles.Application.Services.Users
         #endregion
 
         #region Action Methods
-        public async Task<string> Login(string username = null, string emailAddress = null, string password = null)
+        public async Task<User> Login(string username = null, string emailAddress = null, string password = null)
         {
-            var token = string.Empty;
-
-            var isUser = await _schoolHubDbContext.User.FirstOrDefaultAsync(x => x.Username == username || x.EmailAddress == emailAddress);
+            var isUser = await _schoolHubDbContext.User.FirstOrDefaultAsync(x => x.Username == username || x.EmailAddress == emailAddress && x.Password == password);
             if (isUser == null)
                 return null;
             if (!VerifyPasswordHash(password, isUser.PasswordHash, isUser.PasswordSalt))
                 return null;
-            if (isUser.IsEmailConfirmed == false)
-                return null;
-
-            token = GenerateToken(isUser);
-            return token;
+            return isUser;
         }
 
         public async Task<long> InsertUser(CreateUserDto model)
         {
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
-            CreatePasswordEncrypt(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            var newUser = new User
+            var check = await GetUserByEmailAddress(model.EmailAddress);
+            if (check == null)
             {
-                Username = model.Username,
-                Password = model.Password,
-                EmailAddress = model.EmailAddress,
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
-                IsAdmin = false,
-                IsEmailConfirmed = false,
-                IsUpdated = false,
-            };
-            await _schoolHubDbContext.User.AddAsync(newUser);
-            await _schoolHubDbContext.SaveChangesAsync();
+                CreatePasswordEncrypt(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            //TODO: Send Email to User
-            #region New Registration Notification
-            var type = (int)NotificationType.Registration;
-            await _notificationProcess.ProcessNotificationAsync(newUser, type);
-            #endregion
+                var newUser = new User
+                {
+                    Username = model.Username,
+                    Password = model.Password,
+                    EmailAddress = model.EmailAddress,
+                    PasswordHash = passwordHash,
+                    PasswordSalt = passwordSalt,
+                    IsAdmin = false,
+                    IsEmailConfirmed = false,
+                    IsUpdated = false,
+                    UserType = (int)model.UserType,
+                };
+                await _schoolHubDbContext.User.AddAsync(newUser);
+                await _schoolHubDbContext.SaveChangesAsync();
 
-            return await Task.FromResult(newUser.Id);
+                //TODO: Send Email to User
+                #region New Registration Notification
+                var type = (int)NotificationType.Registration;
+                await _notificationProcess.ProcessNotificationAsync(newUser, type);
+                #endregion
+
+                return await Task.FromResult(newUser.Id);
+            }
+            return 0;
+            
         }
 
 
@@ -96,9 +95,22 @@ namespace SchoolHubProfiles.Application.Services.Users
 
         }
 
-        public Task<IEnumerable<UserDto>> RetrieveAllUsers()
+        public async Task<IEnumerable<UserDto>> RetrieveAllUsers()
         {
-            throw new NotImplementedException();
+            var allUserDto = new List<UserDto>();
+            var allUsers = await _schoolHubDbContext.User.ToListAsync();
+ 
+                allUserDto.AddRange(allUsers.OrderBy(o => o.Id).Select(user => new UserDto()
+                {
+                    Id = user.Id,
+                    EmailAddress = user.EmailAddress,
+                    Username = user.Username,
+                    IsAdmin = user.IsAdmin,
+                    IsEmailConfirmed = user.IsEmailConfirmed,
+                    IsUpdated = user.IsUpdated,
+                    UserType = (UserTypeEnum)user.UserType
+                }));
+                return allUserDto;
         }
 
         public async Task<UserDto> RetrieveUser(long Id)
@@ -113,14 +125,39 @@ namespace SchoolHubProfiles.Application.Services.Users
                 {
                     Id = user.Id,
                     EmailAddress = user.EmailAddress,
-                    Username = user.Username
+                    Username = user.Username,
+                    IsAdmin = user.IsAdmin,
+                    IsEmailConfirmed = user.IsEmailConfirmed,
+                    IsUpdated = user.IsUpdated,
+                    UserType = (UserTypeEnum)user.UserType
                 };
                 return userDto;
             }
             return null;
         }
 
-        public async Task UpdateUser(UpdateUserDto model)
+        public async Task<UserDto> GetUserByEmailAddress(string email)
+        {
+            UserDto userDto;
+            var checkUser = await _schoolHubDbContext.User.Where(e => e.EmailAddress == email).FirstOrDefaultAsync();
+            if (checkUser != null)
+            {
+                userDto = new UserDto
+                {
+                    Id = checkUser.Id,
+                    EmailAddress = checkUser.EmailAddress,
+                    IsEmailConfirmed = checkUser.IsEmailConfirmed,
+                    Username = checkUser.Username,
+                    IsAdmin = checkUser.IsAdmin,
+                    IsUpdated = checkUser.IsUpdated,
+                    UserType = (UserTypeEnum)checkUser.UserType
+                };
+                return userDto;
+            }
+            return null;
+        }
+
+        public async Task<bool> UpdateUser(UpdateUserDto model)
         {
             var user = await _schoolHubDbContext.User.FindAsync(model.Id);
             if(user != null)
@@ -134,14 +171,19 @@ namespace SchoolHubProfiles.Application.Services.Users
             }
             _schoolHubDbContext.Entry(user).State = EntityState.Modified;
             await _schoolHubDbContext.SaveChangesAsync();
-            await Task.CompletedTask;
+            return await Task.FromResult(true);
         }
 
 
         #endregion
 
         #region Helper
-        public string GenerateToken(User user)
+        /// <summary>
+        /// Generates a token
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public async Task<string> GenerateToken(User user)
         {
             //Generating Token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -159,11 +201,17 @@ namespace SchoolHubProfiles.Application.Services.Users
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return tokenString;
+            return await Task.FromResult(tokenString);
         }
 
 
         //CREATION OF PASSWORD ENCRYPTION
+        /// <summary>
+        /// Creates an encrypted password
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="passwordHash"></param>
+        /// <param name="passwordSalt"></param>
         private void CreatePasswordEncrypt(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
@@ -171,13 +219,6 @@ namespace SchoolHubProfiles.Application.Services.Users
                 passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
-        }
-
-        public async Task<bool> GetUserByEmailAddress(string email)
-        {
-            var check = await _schoolHubDbContext.User.Where(e => e.EmailAddress == email).FirstOrDefaultAsync();
-            if (check != null) return true;
-            return false;
         }
 
         //Verify Password

@@ -7,13 +7,10 @@ namespace SchoolHub.Core.Enums
 {
     public enum CategoryEnum
     {
-        [Description("Staff")]
-        Staff,
+        [Description("Primary")]
+        Primary,
 
-        [Description("Student")]
-        Student,
-
-        [Description("Pupil")]
-        Pupil,
+        [Description("Secondary")]
+        Secondary,
     }
 }

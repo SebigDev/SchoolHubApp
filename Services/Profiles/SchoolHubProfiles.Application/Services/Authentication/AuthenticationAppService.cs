@@ -25,14 +25,23 @@ namespace SchoolHubProfiles.Application.Services.Authentication
             _schoolHubDbContext = schoolHubDbContext;
             _notificationProcessor = notificationProcessor;
         }
-        public async Task<AuthResponse> ChangePassword(string email, string password)
+        public async Task<AuthResponse> ChangePassword(string email, string oldPassword, string newPassword)
         {
             AuthResponse response;
 
-            var checkUser = await _schoolHubDbContext.User.Where(u => u.EmailAddress == email && u.IsEmailConfirmed == false).FirstOrDefaultAsync();
-            if(checkUser != null)
+
+            var checkUser = await _schoolHubDbContext.User
+                .Where(u => u.EmailAddress == email && u.Password == oldPassword && u.IsEmailConfirmed == false)
+                .FirstOrDefaultAsync();
+
+            CreatePasswordEncrypt(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
+
+            if (checkUser != null)
             {
-                checkUser.Password = password;
+                checkUser.Password = newPassword;
+                checkUser.PasswordHash = passwordHash;
+                checkUser.PasswordSalt = passwordSalt;
+                checkUser.IsEmailConfirmed = true;
             };
             _schoolHubDbContext.Entry(checkUser).State = EntityState.Modified;
             await _schoolHubDbContext.SaveChangesAsync();
@@ -68,6 +77,23 @@ namespace SchoolHubProfiles.Application.Services.Authentication
 
             return true;
         }
+
+        #region Helpers
+        /// <summary>
+        /// Creates an encrypted password
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="passwordHash"></param>
+        /// <param name="passwordSalt"></param>
+        private void CreatePasswordEncrypt(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+        #endregion
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

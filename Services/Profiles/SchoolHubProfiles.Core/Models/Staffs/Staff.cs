@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SchoolHub.Core.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace SchoolHubProfiles.Core.Models.Staffs
@@ -7,10 +8,7 @@ namespace SchoolHubProfiles.Core.Models.Staffs
     {
         public Staff()
         {
-            IsActive = true;
             DateOfRegistration = DateTime.UtcNow;
-            IsUpdate = false;
-
         }
         public long Id { get; set; }
         public long UserId { get; set; }
@@ -37,13 +35,13 @@ namespace SchoolHubProfiles.Core.Models.Staffs
 
         public bool IsUpdate { get; set; }
 
-        public string Gender { get; set; }
+        public GenderEnum Gender { get; set; }
 
         public DateTime DateOfRegistration { get; set; }
 
         public DateTime? DateUpdated { get; set; }
 
-        public string UserType { get; set; }
+        public UserTypeEnum UserType { get; set; }
     }
 
 }
