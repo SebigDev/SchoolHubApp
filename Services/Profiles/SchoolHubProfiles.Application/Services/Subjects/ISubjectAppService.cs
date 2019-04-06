@@ -1,4 +1,5 @@
 ﻿using SchoolHubProfiles.Core.DTOs.Subjects;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -43,5 +44,13 @@ namespace SchoolHubProfiles.Application.Services.Subjects
         /// </summary>
         /// <returns></returns>
         Task<IEnumerable<SubjectDto>> RetrieveAllSubjects();
+
+        /// <summary>
+        /// retrieves subjects bu Student Identity
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<StudentSubjectsResponse> RetrieveSubjectsByStudentId(long id);
+
     }
 }

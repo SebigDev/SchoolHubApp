@@ -9,5 +9,7 @@ namespace SchoolHubProfiles.Core.DTOs.Users
         public bool Success { get; set; }
         public string Token { get; set; }
         public long UserId { get; set; }
+
+        public DateTime ExpiryDate { get; set; }
     }
 }

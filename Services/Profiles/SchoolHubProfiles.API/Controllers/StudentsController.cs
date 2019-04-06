@@ -57,5 +57,22 @@ namespace SchoolHubProfiles.API.Controllers
                 throw ex;
             }
         }
+
+        [Route("[action]")]
+        [HttpGet]
+        [ProducesResponseType(typeof(StudentDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RetrieveStudentsById(long id)
+        {
+            try
+            {
+                var students = await _studentAppService.RetrieveStudentById(id);
+                return Ok(students);
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

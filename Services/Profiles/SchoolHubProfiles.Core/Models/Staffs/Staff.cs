@@ -42,6 +42,8 @@ namespace SchoolHubProfiles.Core.Models.Staffs
         public DateTime? DateUpdated { get; set; }
 
         public UserTypeEnum UserType { get; set; }
+
+        public string Photo { get; set; }
     }
 
 }

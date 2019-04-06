@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  schoolhubprofiles.api:
+    image: ${DOCKER_REGISTRY-}schoolhubprofilesapi
+    build:
+      context: Services\Profiles\SchoolHubProfiles.API\
+      dockerfile: Dockerfile

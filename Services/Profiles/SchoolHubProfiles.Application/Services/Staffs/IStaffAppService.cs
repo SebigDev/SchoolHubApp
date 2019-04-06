@@ -59,6 +59,8 @@ namespace SchoolHubProfiles.Application.Services.Staffs
         /// <returns></returns>
         Task<IEnumerable<QualificationDto>> GetQualificationsByStaffId(long staffId);
 
+        Task SavePicture(StaffDto staffDto);
+
 
     }
 }

@@ -125,6 +125,27 @@ namespace SchoolHubProfiles.API.Controllers
             }
         }
 
+        [Route("[action]")]
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<ClassDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RetriveUnAssignedClasses(long staffId)
+        {
+            try
+            {
+                var nClass = await _classAppService.RetriveUnAssignedClasses(staffId);
+                if (nClass != null)
+                {
+                    return Ok(nClass);
+                }
+                return BadRequest($"No Class Assigned to Staff with Id of {staffId} found");
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
 
         [Route("[action]")]
         [HttpGet]

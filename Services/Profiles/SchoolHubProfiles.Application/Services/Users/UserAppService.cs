@@ -50,35 +50,45 @@ namespace SchoolHubProfiles.Application.Services.Users
         {
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
-            var check = await GetUserByEmailAddress(model.EmailAddress);
-            if (check == null)
-            {
-                CreatePasswordEncrypt(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-                var newUser = new User
+           using(var _txn = _schoolHubDbContext.Database.BeginTransaction())
+           {
+                var check = await GetUserByEmailAddress(model.EmailAddress);
+                if (check == null)
                 {
-                    Username = model.Username,
-                    Password = model.Password,
-                    EmailAddress = model.EmailAddress,
-                    PasswordHash = passwordHash,
-                    PasswordSalt = passwordSalt,
-                    IsAdmin = false,
-                    IsEmailConfirmed = false,
-                    IsUpdated = false,
-                    UserType = (int)model.UserType,
-                };
-                await _schoolHubDbContext.User.AddAsync(newUser);
-                await _schoolHubDbContext.SaveChangesAsync();
+                    CreatePasswordEncrypt(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-                //TODO: Send Email to User
-                #region New Registration Notification
-                var type = (int)NotificationType.Registration;
-                await _notificationProcess.ProcessNotificationAsync(newUser, type);
-                #endregion
+                    var newUser = new User
+                    {
+                        Username = model.Username,
+                        Password = model.Password,
+                        EmailAddress = model.EmailAddress,
+                        PasswordHash = passwordHash,
+                        PasswordSalt = passwordSalt,
+                        IsEmailConfirmed = false,
+                        IsUpdated = false,
+                        IsAdmin = false,
+                        UserType = (int)model.UserType,
+                    };
+                    if (model.UserType == UserTypeEnum.Admin)
+                    {
+                        newUser.IsAdmin = true;
+                    }
+                    await _schoolHubDbContext.User.AddAsync(newUser);
+                    await _schoolHubDbContext.SaveChangesAsync();
 
-                return await Task.FromResult(newUser.Id);
+                    //TODO: Send Email to User
+                    #region New Registration Notification
+                    var type = (int)NotificationType.Registration;
+                    await _notificationProcess.ProcessNotificationAsync(newUser, type);
+                    #endregion
+
+                    return await Task.FromResult(newUser.Id);
+                }
+                _txn.Commit();
+                return 0;
+                
             }
-            return 0;
             
         }
 
@@ -150,7 +160,7 @@ namespace SchoolHubProfiles.Application.Services.Users
                     Username = checkUser.Username,
                     IsAdmin = checkUser.IsAdmin,
                     IsUpdated = checkUser.IsUpdated,
-                    UserType = (UserTypeEnum)checkUser.UserType
+                    UserType = (UserTypeEnum)checkUser.UserType,
                 };
                 return userDto;
             }
@@ -191,11 +201,11 @@ namespace SchoolHubProfiles.Application.Services.Users
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
-               {
+                {
                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                    new Claim(ClaimTypes.Name, user.EmailAddress)
-               }),
-                Expires = DateTime.Now.AddDays(2.0),
+                }),
+                Expires = DateTime.Now.AddDays(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

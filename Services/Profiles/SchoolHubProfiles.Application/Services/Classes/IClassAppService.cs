@@ -41,6 +41,7 @@ namespace SchoolHubProfiles.Application.Services.Classes
         Task<long> AssignClassesToStaff(long staffId, long classId);
 
         Task<StaffClassAssIgnedResponse> RetrieveClassesForStaff(long staffId);
+        Task<IEnumerable<ClassDto>> RetriveUnAssignedClasses(long staffId);
 
     }
 }

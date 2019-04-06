@@ -5,11 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\SchoolHub.Core\SchoolHub.Core.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\SchoolHub.Data\SchoolHub.Data.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\SchoolHub.Notification\SchoolHub.Notification.csproj" />
     <ProjectReference Include="..\SchoolHubProfiles.Core\SchoolHubProfiles.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Microsoft.EntityFrameworkCore">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.entityframeworkcore\2.1.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
       <HintPath>..\..\..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.dependencyinjection.abstractions\2.1.1\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>

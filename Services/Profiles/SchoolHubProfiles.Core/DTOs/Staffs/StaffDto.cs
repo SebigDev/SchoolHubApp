@@ -24,5 +24,7 @@ namespace SchoolHubProfiles.Core.DTOs.Staffs
         public DateTime DateOfRegistration { get; set; }
 
         public string UserType { get; set; }
+
+        public string Photo { get; set; }
     }
 }

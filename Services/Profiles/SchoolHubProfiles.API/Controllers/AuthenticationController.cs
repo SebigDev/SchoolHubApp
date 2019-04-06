@@ -31,7 +31,7 @@ namespace SchoolHubProfiles.API.Controllers
                 var pwdChange = await _authenticationAppService.ChangePassword(email, oldPassword,newPassword);
                 if(pwdChange == null)
                 {
-                    return BadRequest();
+                    return BadRequest("Your Password change failed, please check your credentials");
                 }
                 return Ok(pwdChange);
             }
@@ -50,7 +50,7 @@ namespace SchoolHubProfiles.API.Controllers
                 var pwdReset = await _authenticationAppService.ResetPassword(request);
                 if(pwdReset == false)
                 {
-                    return BadRequest();
+                    return BadRequest("Password Reset Failed, Please check your email");
                 }
                 return Ok(pwdReset);
             }

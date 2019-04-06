@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SchoolHubProfiles.Application.Services.Classes;
 using SchoolHubProfiles.Core.Context;
 using SchoolHubProfiles.Core.DTOs.Subjects;
 using SchoolHubProfiles.Core.Models.Subjects;
@@ -17,6 +18,7 @@ namespace SchoolHubProfiles.Application.Services.Subjects
         public SubjectAppService(SchoolHubDbContext schoolHubDbContext)
         {
             _schoolHubDbContext = schoolHubDbContext;
+          
         }
 
 
@@ -126,6 +128,22 @@ namespace SchoolHubProfiles.Application.Services.Subjects
                 return true;
             }
             return false;
+        }
+
+        public async Task<StudentSubjectsResponse> RetrieveSubjectsByStudentId(long id)
+        {
+            StudentSubjectsResponse response = null;
+
+            var studentClassMap = await _schoolHubDbContext.StudentClassMap.FirstOrDefaultAsync(s => s.StudentId == id);
+
+            var studentClass = await RetrieveSubjectByClassId(studentClassMap.ClassId);
+            response = new StudentSubjectsResponse
+            {
+                StudentId = id,
+                Subjects = studentClass.Subjects
+            };
+            return response;
+            
         }
 
         #region IDisposable Support

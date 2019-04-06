@@ -80,7 +80,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
 
         public async Task<bool> UpdateStaff(StaffDto update)
         {
-            var retrieveStaff = RetriveStaffById(update.Id).Result.Staff;
+            var retrieveStaff = await _schoolHubDbContext.Staff.FirstOrDefaultAsync(x =>x.Id == update.Id);
             if(retrieveStaff != null)
             {
                 retrieveStaff.Id = update.Id;
@@ -111,6 +111,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 Gender = s.Gender.GetDescription(),
                 IsActive = s.IsActive,
                 IsUpdate = s.IsUpdate,
+                Photo = s.Photo,
             }));
             return staffDto;
         }
@@ -121,7 +122,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
             var staffDto = new List<StaffDto>();
             staffDto.AddRange(staffs.OrderBy(x => x.DateEmployed).Select(s => new StaffDto()
             {
-                UserId = s.Id,
+                UserId = s.UserId,
                 Firstname = s.Firstname,
                 Middlename = s.Middlename,
                 Lastname = s.Lastname,
@@ -131,6 +132,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 UserType = s.UserType.GetDescription(),
                 IsActive = s.IsActive,
                 IsUpdate = s.IsUpdate,
+                Photo = s.Photo,
             }));
             return staffDto;
         }
@@ -145,7 +147,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
             staffDto = new StaffDto
             {
                 Id = staff.Id,
-                UserId = staff.Id,
+                UserId = staff.UserId,
                 Firstname = staff.Firstname,
                 Middlename = staff.Middlename,
                 Lastname = staff.Lastname,
@@ -155,6 +157,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 IsActive = staff.IsActive,
                 IsUpdate = staff.IsUpdate,
                 UserType = staff.UserType.GetDescription(),
+                Photo = staff.Photo,
             };
             var qualDto = await GetQualificationsByStaffId(Id);
             var response = new StaffQualificationResponse
@@ -167,6 +170,18 @@ namespace SchoolHubProfiles.Application.Services.Staffs
 
         }
 
+        public async Task SavePicture(StaffDto staffDto)
+        {
+            var staff = await _schoolHubDbContext.Staff.FirstOrDefaultAsync(x => x.Id == staffDto.Id);
+            if(staff != null)
+            {
+                staff.Id = staffDto.Id;
+                staff.Photo = staffDto.Photo;
+            }
+            _schoolHubDbContext.Entry(staff).State = EntityState.Modified;
+            await _schoolHubDbContext.SaveChangesAsync();
+        }
+
         public async Task<StaffQualificationResponse> RetriveStaffByUserId(long userId)
         {
             StaffDto staffDto;
@@ -176,7 +191,8 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 return null;
             staffDto = new StaffDto
             {
-                UserId = staff.Id,
+                Id = staff.Id,
+                UserId = staff.UserId,
                 Firstname = staff.Firstname,
                 Middlename = staff.Middlename,
                 Lastname = staff.Lastname,
@@ -186,6 +202,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 IsActive = staff.IsActive,
                 IsUpdate = staff.IsUpdate,
                 UserType = staff.UserType.GetDescription(),
+                Photo = staff.Photo,
             };
             var qualDto = await GetQualificationsByStaffId(staff.Id);
             var response = new StaffQualificationResponse
@@ -258,10 +275,10 @@ namespace SchoolHubProfiles.Application.Services.Staffs
         }
 
         // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~StaffAppService() {
+        //~StaffAppService() {
         //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
+           //Dispose(false);
+       //  }
 
         // This code added to correctly implement the disposable pattern.
         public void Dispose()
@@ -270,6 +287,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
             Dispose(true);
             // TODO: uncomment the following line if the finalizer is overridden above.
             GC.SuppressFinalize(this);
+           
         }
 
         #endregion

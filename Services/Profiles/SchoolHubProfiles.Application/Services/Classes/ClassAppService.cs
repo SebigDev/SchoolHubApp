@@ -43,8 +43,6 @@ namespace SchoolHubProfiles.Application.Services.Classes
 
         public async Task<long> AssignClassesToStaff(long staffId, long classId)
         {
-            var staff = new Staff();
-            var nClass = new ClassName();
             var staffClass = new StaffClassMap
             {
                 StaffId = staffId,
@@ -76,6 +74,43 @@ namespace SchoolHubProfiles.Application.Services.Classes
             };
             return response;
 
+        }
+
+        public async Task<IEnumerable<ClassDto>> RetriveUnAssignedClasses(long staffId)
+        {
+            var classDto = new List<ClassDto>();
+
+            //check for assigned class already
+            var assignedClass = await _schoolHubDbContext.StaffClassMap
+                                    .Where(s =>s.StaffId != 0).ToListAsync();
+            var classes = await _schoolHubDbContext.ClassName.ToListAsync();
+
+            if(assignedClass.Count() <= 0)
+            {
+                classDto.AddRange(classes.OrderBy(x => x.CreatedOn).Select(m => new ClassDto()
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    ClassCode = m.ClassCode,
+                    CreatedOn = m.CreatedOn,
+                    Category = m.Category.GetDescription()
+                }));
+            }
+            else if(assignedClass.Count() > 0)
+            {
+                foreach(var assingned in assignedClass)
+                {
+                    classDto.AddRange(classes.Where(s =>s.Id != assingned.ClassId).OrderBy(x => x.CreatedOn).Select(m => new ClassDto()
+                    {
+                        Id = m.Id,
+                        Name = m.Name,
+                        ClassCode = m.ClassCode,
+                        CreatedOn = m.CreatedOn,
+                        Category = m.Category.GetDescription()
+                    }));
+                }
+            }
+            return classDto;
         }
 
         public async Task<bool> DeleteClass(long Id)

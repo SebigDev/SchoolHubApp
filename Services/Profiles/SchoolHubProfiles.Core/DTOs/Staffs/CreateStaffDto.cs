@@ -20,5 +20,7 @@ namespace SchoolHubProfiles.Core.DTOs.Staffs
         public GenderEnum Gender { get; set; }
 
         public UserTypeEnum UserType { get; set; }
+
+        public string Photo { get; set; }
     }
 }

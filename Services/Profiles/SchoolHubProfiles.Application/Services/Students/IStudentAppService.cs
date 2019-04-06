@@ -22,11 +22,13 @@ namespace SchoolHubProfiles.Application.Services.Students
         /// <returns></returns>
         Task<StudentClassResponse> RetrieveStudentsByClassID(long classId);
 
+
         /// <summary>
         /// Retrieves All Students
         /// </summary>
         /// <returns></returns>
         Task<IEnumerable<StudentDto>> RetrieveAllStudents();
+        Task<StudentDto> RetrieveStudentById(long id);
 
     }
 }

@@ -33,7 +33,7 @@ namespace SchoolHubProfiles.API.Controllers
                 var userId = await _userAppService.InsertUser(model);
                 if(userId < 1)
                 {
-                    return BadRequest();
+                    return BadRequest("Your registration failed, please contact administrator or try again");
                 }
                 return Ok($"User with the Id of {userId} created successfully");
             }
@@ -62,7 +62,8 @@ namespace SchoolHubProfiles.API.Controllers
                 {
                     Success = true,
                     Token = token,
-                    UserId = nUser.Id
+                    UserId = nUser.Id,
+                    ExpiryDate = DateTime.Now.AddDays(2)
                 };
                 return Ok(loginResponse);
                 
@@ -85,7 +86,7 @@ namespace SchoolHubProfiles.API.Controllers
                var isUpdated = await _userAppService.UpdateUser(update);
                 if(isUpdated == false)
                 {
-                    return BadRequest();
+                    return BadRequest("User update failed, please try again");
                 }
                 return Ok(isUpdated);
             }
@@ -108,7 +109,7 @@ namespace SchoolHubProfiles.API.Controllers
                 {
                     return Ok("Deleted Successfully");
                 }
-                return BadRequest();
+                return BadRequest("Ooops!! user cannot be deleted, confirm you have the permissions");
             }
             catch (Exception ex)
             {

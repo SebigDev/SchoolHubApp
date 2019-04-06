@@ -130,6 +130,23 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpGet]
+        [ProducesResponseType(typeof(StudentSubjectsResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RetrieveAllSubjectsByStudentId(long id)
+        {
+            try
+            {
+                var studentSubj = await _subjectAppService.RetrieveSubjectsByStudentId(id);
+                return Ok(studentSubj);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [Route("[action]")]
+        [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<SubjectDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> RetrieveAllSubjects()
         {

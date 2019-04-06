@@ -30,6 +30,8 @@ namespace SchoolHubProfiles.Application.Services.Students
 
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
+            if (classId < 1)
+                throw new ArgumentNullException(nameof(classId));
 
             student = new Student
             {
@@ -37,6 +39,7 @@ namespace SchoolHubProfiles.Application.Services.Students
                 Middlename = model.Middlename,
                 Lastname = model.Lastname,
                 DateOfBirth = model.DateOfBirth,
+                DateOfRegistration = model.DateOfRegistration,
                 Gender = model.Gender.GetDescription(),
             };
             await _schoolHubDbContext.Student.AddAsync(student);
@@ -59,6 +62,29 @@ namespace SchoolHubProfiles.Application.Services.Students
             throw new NotImplementedException();
         }
 
+        public async Task<StudentDto> RetrieveStudentById(long id)
+        {
+            StudentDto studentDto = null;
+            if (id < 1)
+                throw new ArgumentNullException(nameof(id));
+            var student = await _schoolHubDbContext.Student.FirstOrDefaultAsync(s => s.Id == id);
+            if (student == null)
+                return null;
+            studentDto = new StudentDto
+            {
+                Id = student.Id,
+                Firstname = student.Firstname,
+                Middlename = student.Middlename,
+                Lastname = student.Lastname,
+                DateOfBirth = student.DateOfBirth,
+                DateOfRegistration = student.DateOfRegistration,
+                Gender = student.Gender,
+                Age = student.Age,
+                IsActive = student.IsActive
+            };
+            return studentDto;
+        }
+
         public async Task<StudentClassResponse> RetrieveStudentsByClassID(long classId)
         {
             StudentClassResponse studentClassResponses;
@@ -72,10 +98,12 @@ namespace SchoolHubProfiles.Application.Services.Students
                 var student = await _schoolHubDbContext.Student.FirstOrDefaultAsync(x => x.Id == studentMap.StudentId);
                 studentDto = new StudentDto
                 {
+                    Id = student.Id,
                     Firstname = student.Firstname,
                     Middlename = student.Middlename,
                     Lastname = student.Lastname,
                     DateOfBirth = student.DateOfBirth,
+                    DateOfRegistration = student.DateOfRegistration,
                     Gender = student.Gender,
                     Age = student.Age,
                     IsActive = student.IsActive

@@ -2,9 +2,6 @@
 using SchoolHub.Notification.Services.MailService;
 using SchoolHub.Notification.Services.Process;
 using SchoolHub.Notification.Services.Templates;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SchoolHub.Notification
 {
