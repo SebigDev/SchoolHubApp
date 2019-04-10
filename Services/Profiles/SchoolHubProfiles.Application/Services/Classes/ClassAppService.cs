@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SchoolHub.Core.Extensions;
 using SchoolHubProfiles.Core.Context;
 using SchoolHubProfiles.Core.DTOs.Classes;
 using SchoolHubProfiles.Core.Models.Classes;
 using SchoolHubProfiles.Core.Models.Mapping;
-using SchoolHubProfiles.Core.Models.Staffs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SchoolHubProfiles.Application.Services.Classes
 {
@@ -79,13 +77,14 @@ namespace SchoolHubProfiles.Application.Services.Classes
         public async Task<IEnumerable<ClassDto>> RetriveUnAssignedClasses(long staffId)
         {
             var classDto = new List<ClassDto>();
+          
 
             //check for assigned class already
-            var assignedClass = await _schoolHubDbContext.StaffClassMap
-                                    .Where(s =>s.StaffId != 0).ToListAsync();
+            var assignedClasses = await _schoolHubDbContext.StaffClassMap.ToListAsync();
+
             var classes = await _schoolHubDbContext.ClassName.ToListAsync();
 
-            if(assignedClass.Count() <= 0)
+            if(assignedClasses.Count() == 0)
             {
                 classDto.AddRange(classes.OrderBy(x => x.CreatedOn).Select(m => new ClassDto()
                 {
@@ -96,19 +95,29 @@ namespace SchoolHubProfiles.Application.Services.Classes
                     Category = m.Category.GetDescription()
                 }));
             }
-            else if(assignedClass.Count() > 0)
+            else if(assignedClasses.Count() > 0)
             {
-                foreach(var assingned in assignedClass)
+                var classNames = new List<ClassName>();
+              
+                foreach(var assignedClass in assignedClasses)
                 {
-                    classDto.AddRange(classes.Where(s =>s.Id != assingned.ClassId).OrderBy(x => x.CreatedOn).Select(m => new ClassDto()
-                    {
-                        Id = m.Id,
-                        Name = m.Name,
-                        ClassCode = m.ClassCode,
-                        CreatedOn = m.CreatedOn,
-                        Category = m.Category.GetDescription()
-                    }));
+                    var mclass = await _schoolHubDbContext.ClassName.Where(x => x.Id == assignedClass.ClassId).FirstOrDefaultAsync();
+                    //add classes mapped
+                    classNames.Add(mclass);
                 }
+
+                //filters all classes not Mapped to any staff
+                var filteredClass = classes.Where(c => !classNames.Any(p => p.Id == c.Id)).ToList();
+
+                classDto.AddRange(filteredClass.OrderBy(x => x.CreatedOn).Select(m => new ClassDto()
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    ClassCode = m.ClassCode,
+                    CreatedOn = m.CreatedOn,
+                    Category = m.Category.GetDescription()
+                }));
+
             }
             return classDto;
         }

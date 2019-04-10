@@ -30,6 +30,10 @@ namespace SchoolHubProfiles.API.Controllers
         {
             try
             {
+                var checkUser = await _userAppService.GetUserByEmailAddress(model.EmailAddress);
+                if (checkUser != null)
+                    return BadRequest($"User with {model.EmailAddress} already exists");
+
                 var userId = await _userAppService.InsertUser(model);
                 if(userId < 1)
                 {

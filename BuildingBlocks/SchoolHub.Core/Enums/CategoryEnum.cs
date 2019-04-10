@@ -7,6 +7,9 @@ namespace SchoolHub.Core.Enums
 {
     public enum CategoryEnum
     {
+        [Description("Nusery")]
+        Nusery = 1,
+
         [Description("Primary")]
         Primary,
 

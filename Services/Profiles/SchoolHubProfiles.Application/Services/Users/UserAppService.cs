@@ -53,9 +53,7 @@ namespace SchoolHubProfiles.Application.Services.Users
 
            using(var _txn = _schoolHubDbContext.Database.BeginTransaction())
            {
-                var check = await GetUserByEmailAddress(model.EmailAddress);
-                if (check == null)
-                {
+           
                     CreatePasswordEncrypt(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
                     var newUser = new User
@@ -81,14 +79,11 @@ namespace SchoolHubProfiles.Application.Services.Users
                     #region New Registration Notification
                     var type = (int)NotificationType.Registration;
                     await _notificationProcess.ProcessNotificationAsync(newUser, type);
-                    #endregion
-
-                    return await Task.FromResult(newUser.Id);
-                }
+                #endregion
                 _txn.Commit();
-                return 0;
+                return await Task.FromResult(newUser.Id);
                 
-            }
+           }
             
         }
 

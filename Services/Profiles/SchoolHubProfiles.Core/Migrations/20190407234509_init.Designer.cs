@@ -10,14 +10,14 @@ using SchoolHubProfiles.Core.Context;
 namespace SchoolHubProfiles.Core.Migrations
 {
     [DbContext(typeof(SchoolHubDbContext))]
-    [Migration("20190316090102_StaffTablePhotoField")]
-    partial class StaffTablePhotoField
+    [Migration("20190407234509_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -117,6 +117,52 @@ namespace SchoolHubProfiles.Core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StudentClassMap");
+                });
+
+            modelBuilder.Entity("SchoolHubProfiles.Core.Models.Payments.Amount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("ClassId");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<decimal>("FeeAmount");
+
+                    b.Property<int>("FeeType");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Amount");
+                });
+
+            modelBuilder.Entity("SchoolHubProfiles.Core.Models.Payments.Payment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount");
+
+                    b.Property<long>("ClassId");
+
+                    b.Property<int>("FeeType");
+
+                    b.Property<DateTime>("PaymentDate");
+
+                    b.Property<string>("PaymentRefernceId");
+
+                    b.Property<int>("PaymentStatus");
+
+                    b.Property<long>("StudentId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Payment");
                 });
 
             modelBuilder.Entity("SchoolHubProfiles.Core.Models.Qualifications.Qualification", b =>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolHubProfiles.Core.Models.Classes;
 using SchoolHubProfiles.Core.Models.Mapping;
+using SchoolHubProfiles.Core.Models.Payments;
 using SchoolHubProfiles.Core.Models.Qualifications;
 using SchoolHubProfiles.Core.Models.Staffs;
 using SchoolHubProfiles.Core.Models.Students;
@@ -28,5 +29,7 @@ namespace SchoolHubProfiles.Core.Context
             public DbSet<StaffClassMap> StaffClassMap { get; set; }
             public DbSet<Student> Student { get; set; }
             public DbSet<StudentClassMap> StudentClassMap { get; set; }
+            public DbSet<Payment> Payment { get; set; }
+            public DbSet<Amount> Amount { get; set; }
     }
 }

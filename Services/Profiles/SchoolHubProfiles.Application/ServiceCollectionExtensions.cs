@@ -2,6 +2,7 @@
 using SchoolHubProfiles.Application.Services.Authentication;
 using SchoolHubProfiles.Application.Services.Classes;
 using SchoolHubProfiles.Application.Services.Mapping;
+using SchoolHubProfiles.Application.Services.Payments;
 using SchoolHubProfiles.Application.Services.Staffs;
 using SchoolHubProfiles.Application.Services.Students;
 using SchoolHubProfiles.Application.Services.Subjects;
@@ -20,6 +21,7 @@ namespace SchoolHubProfiles.Application
             services.AddTransient<IClassAppService, ClassAppService>();
             services.AddTransient<ISubjectAppService,SubjectAppService>();
             services.AddTransient<IStudentAppService, StudentAppService>();
+            services.AddTransient<IPaymentAppServices, PaymentAppServices>();
 
 
             return services;
