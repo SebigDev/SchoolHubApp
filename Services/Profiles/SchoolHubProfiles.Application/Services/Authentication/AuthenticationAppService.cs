@@ -27,12 +27,10 @@ namespace SchoolHubProfiles.Application.Services.Authentication
         }
         public async Task<AuthResponse> ChangePassword(string email, string oldPassword, string newPassword)
         {
-            AuthResponse response;
-
 
             var checkUser = await _schoolHubDbContext.User
-                .Where(u => u.EmailAddress == email && u.Password == oldPassword && u.IsEmailConfirmed == false)
-                .FirstOrDefaultAsync();
+                                    .Where(u => u.EmailAddress == email && u.Password == oldPassword && u.IsEmailConfirmed == false)
+                                    .FirstOrDefaultAsync();
 
             CreatePasswordEncrypt(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -45,7 +43,8 @@ namespace SchoolHubProfiles.Application.Services.Authentication
             };
             _schoolHubDbContext.Entry(checkUser).State = EntityState.Modified;
             await _schoolHubDbContext.SaveChangesAsync();
-            response = new AuthResponse
+
+            var response = new AuthResponse
             {
                 Status = true,
                 Success = AuthResponseEnum.Yes.GetDescription()
@@ -53,7 +52,7 @@ namespace SchoolHubProfiles.Application.Services.Authentication
 
             //TODO: Send Email to User
             #region New Password Change Notification
-            var type = (int)NotificationType.PasswordChange;
+            const int type = (int)NotificationType.PasswordChange;
             await _notificationProcessor.ProcessNotificationAsync(checkUser, type);
             #endregion
             return response;
@@ -71,7 +70,7 @@ namespace SchoolHubProfiles.Application.Services.Authentication
 
             //TODO: Send Email to User
             #region New Password Reset Notification
-            var type = (int)NotificationType.PasswordReset;
+            const int type = (int)NotificationType.PasswordReset;
             await _notificationProcessor.ProcessNotificationAsync(getUser, type);
             #endregion
 

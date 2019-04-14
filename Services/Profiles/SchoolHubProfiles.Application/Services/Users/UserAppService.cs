@@ -51,7 +51,7 @@ namespace SchoolHubProfiles.Application.Services.Users
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-           using(var _txn = _schoolHubDbContext.Database.BeginTransaction())
+           using(var txn = _schoolHubDbContext.Database.BeginTransaction())
            {
            
                     CreatePasswordEncrypt(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -77,10 +77,10 @@ namespace SchoolHubProfiles.Application.Services.Users
 
                     //TODO: Send Email to User
                     #region New Registration Notification
-                    var type = (int)NotificationType.Registration;
+                    const int type = (int)NotificationType.Registration;
                     await _notificationProcess.ProcessNotificationAsync(newUser, type);
                 #endregion
-                _txn.Commit();
+                txn.Commit();
                 return await Task.FromResult(newUser.Id);
                 
            }
