@@ -133,6 +133,7 @@ namespace SchoolHubProfiles.Application.Services.Payments
             var myFee = await _schoolhubDbContext.Amount.Where(s => s.ClassId== classId && s.FeeType == nfeeType).FirstOrDefaultAsync();
             if (myFee != null)
             {
+                fee.Id = myFee.Id;
                 fee.ClassId = myFee.ClassId;
                 fee.FeeAmount = myFee.FeeAmount;
                 fee.FeeType = myFee.FeeType.GetDescription();
@@ -240,6 +241,7 @@ namespace SchoolHubProfiles.Application.Services.Payments
             var allAmount = await _schoolhubDbContext.Amount.ToListAsync();
             allAmountDto.AddRange(allAmount.OrderBy(o => o.DateCreated).Select(a => new AmountDto()
             {
+                Id = a.Id,
                 ClassId = a.ClassId,
                 FeeAmount = a.FeeAmount,
                 FeeType = a.FeeType.GetDescription(),
@@ -267,7 +269,39 @@ namespace SchoolHubProfiles.Application.Services.Payments
             return false;
                
         }
-        #endregion     
+        #endregion
+
+        #region PaymentSummary
+
+        public async Task<PaymentSummaryResponse> RetrievePaymentSummary(long studentId)
+        {
+            var allPaySum = new List<PaymentType>();
+
+            var allPayment = await RetrieveAllPaymentsByStudent(studentId);
+            foreach (var payment in allPayment)
+            {
+                var payDetail = new PaymentType
+                {
+                    PayAmount = payment.PaymentReport.Amount,
+                    PayName = payment.PaymentReport.FeeType
+                };
+                allPaySum.Add(payDetail);
+            }
+            var student = await _schoolhubDbContext.Student.FirstOrDefaultAsync(s => s.Id == studentId);
+            var studentClassMap = await _schoolhubDbContext.StudentClassMap.FirstOrDefaultAsync(s => s.StudentId == studentId);
+            var studentClass = await _schoolhubDbContext.ClassName.Where(x => x.Id == studentClassMap.ClassId).FirstOrDefaultAsync();
+            var summaryResponse = new PaymentSummaryResponse
+            {
+                StudentFullname = $"{student.Firstname} {student.Lastname}",
+                Classname = studentClass.Name,
+                PaymentType = allPaySum,
+                SumTotal = allPaySum.Sum(s =>s.PayAmount)
+            };
+
+            return summaryResponse;
+        }
+
+        #endregion
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -303,6 +337,8 @@ namespace SchoolHubProfiles.Application.Services.Payments
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
+
+      
         #endregion
     }
 }

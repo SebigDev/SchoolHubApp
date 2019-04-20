@@ -21,5 +21,8 @@ namespace SchoolHubProfiles.Application.Services.Payments
         Task<IEnumerable<AmountDto>> RetrieveAllAmount();
         Task<AmountDto> RetrieveAmountByClassAndFeeType(long classid, int feeType);
         Task<bool> UpdateAmount(AmountDto amountDto);
+
+        //Summation Of All Payment
+        Task<PaymentSummaryResponse> RetrievePaymentSummary(long studentId);
     }
 }

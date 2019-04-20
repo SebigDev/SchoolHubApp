@@ -1,4 +1,5 @@
 ﻿using SchoolHubProfiles.Core.DTOs.Auth;
+using SchoolHubProfiles.Core.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,5 +23,7 @@ namespace SchoolHubProfiles.Application.Services.Authentication
         /// <param name="request"></param>
         /// <returns></returns>
         Task<bool> ResetPassword(ResetPasswordRequest request);
+
+        Task<User> LogOut(long id);
     }
 }

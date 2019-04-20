@@ -8,6 +8,7 @@ using SchoolHub.Notification.Services.Process;
 using SchoolHubProfiles.Application.Services.Users;
 using SchoolHubProfiles.Core.Context;
 using SchoolHubProfiles.Core.DTOs.Auth;
+using SchoolHubProfiles.Core.Models.Users;
 
 namespace SchoolHubProfiles.Application.Services.Authentication
 {
@@ -75,6 +76,16 @@ namespace SchoolHubProfiles.Application.Services.Authentication
             #endregion
 
             return true;
+        }
+
+        public async Task<User> LogOut(long id)
+        {
+            var user = await _userAppService.RetrieveUser(id);
+            if (user != null)
+            {
+                return  new User {Username = null, EmailAddress = null, Id=0, IsAdmin=false, UserType=0, IsEmailConfirmed= false};
+            }
+            return null;
         }
 
         #region Helpers

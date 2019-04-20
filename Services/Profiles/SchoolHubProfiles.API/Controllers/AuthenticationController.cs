@@ -59,5 +59,21 @@ namespace SchoolHubProfiles.API.Controllers
                 throw ex;
             }
         }
+
+        [Route("[action]")]
+        [HttpPut]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> LogOut(long userId)
+        {
+            try
+            {
+                var logout = await _authenticationAppService.LogOut(userId);
+                return Ok(logout);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
 }

@@ -131,6 +131,23 @@ namespace SchoolHubProfiles.API.Controllers
             }
         }
 
+
+        [Route("[action]")]
+        [HttpGet]
+        [ProducesResponseType(typeof(PaymentSummaryResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RetrievePaymentSummary(long studentId)
+        {
+            try
+            {
+                var allPaymentSummary = await _paymentAppServices.RetrievePaymentSummary(studentId);
+                return Ok(allPaymentSummary);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [Route("[action]")]
         [HttpPost]
         [ProducesResponseType(typeof(int), (int)HttpStatusCode.Created)]
