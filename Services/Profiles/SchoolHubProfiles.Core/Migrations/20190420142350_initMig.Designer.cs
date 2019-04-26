@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolHubProfiles.Core.Context;
 
 namespace SchoolHubProfiles.Core.Migrations
 {
     [DbContext(typeof(SchoolHubDbContext))]
-    partial class SchoolHubDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190420142350_initMig")]
+    partial class initMig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,8 +204,6 @@ namespace SchoolHubProfiles.Core.Migrations
 
                     b.Property<int>("Gender");
 
-                    b.Property<byte[]>("Image");
-
                     b.Property<bool?>("IsActive");
 
                     b.Property<bool>("IsUpdate");
@@ -211,6 +211,8 @@ namespace SchoolHubProfiles.Core.Migrations
                     b.Property<string>("Lastname");
 
                     b.Property<string>("Middlename");
+
+                    b.Property<byte[]>("Photo");
 
                     b.Property<long>("UserId");
 
@@ -239,8 +241,6 @@ namespace SchoolHubProfiles.Core.Migrations
 
                     b.Property<string>("Gender");
 
-                    b.Property<byte[]>("Image");
-
                     b.Property<bool?>("IsActive");
 
                     b.Property<bool>("IsUpdate");
@@ -248,6 +248,8 @@ namespace SchoolHubProfiles.Core.Migrations
                     b.Property<string>("Lastname");
 
                     b.Property<string>("Middlename");
+
+                    b.Property<byte[]>("Photo");
 
                     b.HasKey("Id");
 

@@ -24,4 +24,9 @@
     <ProjectReference Include="..\SchoolHubProfiles.Core\SchoolHubProfiles.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Contents\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

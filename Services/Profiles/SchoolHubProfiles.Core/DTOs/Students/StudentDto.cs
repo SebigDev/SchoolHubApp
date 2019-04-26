@@ -25,5 +25,7 @@ namespace SchoolHubProfiles.Core.DTOs.Students
         public DateTime DateOfRegistration { get; set; }
 
         public DateTime? DateUpdated { get; set; }
+
+        public byte[] Image { get; set; }
     }
 }

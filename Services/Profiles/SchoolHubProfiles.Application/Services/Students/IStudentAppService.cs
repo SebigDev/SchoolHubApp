@@ -30,5 +30,8 @@ namespace SchoolHubProfiles.Application.Services.Students
         Task<IEnumerable<StudentDto>> RetrieveAllStudents();
         Task<StudentDto> RetrieveStudentById(long id);
 
+        Task SavePicture(StudentDto studentDto);
+
+        Task<string> RetrievePhotoByStudentId(long studentId);
     }
 }

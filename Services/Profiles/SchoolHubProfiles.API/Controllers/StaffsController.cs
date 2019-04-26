@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SchoolHubProfiles.Application.Services.Staffs;
-using SchoolHubProfiles.Application.Services.Users;
 using SchoolHubProfiles.Core.DTOs.Staffs;
-using SchoolHubProfiles.Core.Models.Staffs;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SchoolHubProfiles.API.Controllers
 {
@@ -127,7 +124,7 @@ namespace SchoolHubProfiles.API.Controllers
         [Route("[action]")]
         [HttpPost, DisableRequestSizeLimit]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> PhotoUpload(long staffId, IFormFile files)
+        public async Task<IActionResult> StaffPhotoUpload(long staffId, IFormFile files)
         {
             try
             {
@@ -150,6 +147,9 @@ namespace SchoolHubProfiles.API.Controllers
                     var nFileName = fileName.Replace(fileName, $"{nStaff.Staff.Firstname}-{nStaff.Staff.Lastname}");
                     completeName = nFileName + ext;
                     string fullPath = Path.Combine(newPath, completeName);
+
+                    byte[] imageByte = Encoding.ASCII.GetBytes(fullPath);
+
                     using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
                          await file.CopyToAsync(stream);
@@ -159,7 +159,7 @@ namespace SchoolHubProfiles.API.Controllers
                     if (mStaff != null)
                     {
                         staff.Id = staffId;
-                        staff.Photo = completeName;
+                        staff.Image = imageByte;
                     }
                     await _staffAppService.SavePicture(staff);
                 }
@@ -181,7 +181,7 @@ namespace SchoolHubProfiles.API.Controllers
             {
                 var photo = await _staffAppService.RetriveStaffById(staffId);
                 if (photo != null)
-                    return Ok(photo.Staff.Photo);
+                    return Ok(photo.Staff.Image);
                 return BadRequest("No Photo Found");
             }
             catch (Exception ex)

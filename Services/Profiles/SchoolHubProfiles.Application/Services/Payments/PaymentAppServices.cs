@@ -201,6 +201,34 @@ namespace SchoolHubProfiles.Application.Services.Payments
             return fee;
         }
 
+        public async Task<PaymentResponse> RetrieveFeeByTypeAndStudentId(int feeType, long studentId)
+        {
+            var type = (FeeType)feeType;
+
+            var fee = await _schoolhubDbContext.Payment.Where(p => p.FeeType == type && p.StudentId == studentId).FirstOrDefaultAsync();
+            if(fee != null)
+            {
+                var response = new PaymentResponse
+                {
+                    PayChannel = new PayChannel
+                    {
+                        StudentId = studentId,
+                        ClassId = fee.ClassId,
+                    },
+                    PaymentReport = new PaymentReport
+                    {
+                        PaymentRefrenceId = fee.PaymentRefernceId,
+                        PaymentStatus = fee.PaymentStatus.GetDescription(),
+                        Amount = fee.Amount,
+                        FeeType = fee.FeeType.GetDescription(),
+                    }
+                    
+                };
+                return response;
+            }
+            return null;
+        }
+
         #region Amount
 
         public async Task<int> CreateAmount(CreateAmountDto createAmountDto)

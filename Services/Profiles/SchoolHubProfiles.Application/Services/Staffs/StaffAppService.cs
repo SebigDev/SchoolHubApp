@@ -111,7 +111,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 Gender = s.Gender.GetDescription(),
                 IsActive = s.IsActive,
                 IsUpdate = s.IsUpdate,
-                Photo = s.Photo,
+                Image = s.Image,
             }));
             return staffDto;
         }
@@ -132,7 +132,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 UserType = s.UserType.GetDescription(),
                 IsActive = s.IsActive,
                 IsUpdate = s.IsUpdate,
-                Photo = s.Photo,
+                Image = s.Image,
             }));
             return staffDto;
         }
@@ -157,7 +157,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 IsActive = staff.IsActive,
                 IsUpdate = staff.IsUpdate,
                 UserType = staff.UserType.GetDescription(),
-                Photo = staff.Photo,
+                Image = staff.Image,
             };
             var qualDto = await GetQualificationsByStaffId(Id);
             var response = new StaffQualificationResponse
@@ -176,7 +176,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
             if(staff != null)
             {
                 staff.Id = staffDto.Id;
-                staff.Photo = staffDto.Photo;
+                staff.Image = staffDto.Image;
             }
             _schoolHubDbContext.Entry(staff).State = EntityState.Modified;
             await _schoolHubDbContext.SaveChangesAsync();
@@ -202,7 +202,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 IsActive = staff.IsActive,
                 IsUpdate = staff.IsUpdate,
                 UserType = staff.UserType.GetDescription(),
-                Photo = staff.Photo,
+                Image = staff.Image,
             };
             var qualDto = await GetQualificationsByStaffId(staff.Id);
             var response = new StaffQualificationResponse

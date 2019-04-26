@@ -15,7 +15,7 @@ namespace SchoolHubProfiles.Application.Services.Students
 {
     public class StudentAppService : IStudentAppService
     {
-        private SchoolHubDbContext _schoolHubDbContext;
+        private readonly SchoolHubDbContext _schoolHubDbContext;
         private readonly IClassAppService _classAppService;
         public StudentAppService(SchoolHubDbContext schoolHubDbContext, IClassAppService classAppService)
         {
@@ -25,15 +25,13 @@ namespace SchoolHubProfiles.Application.Services.Students
 
         public async Task<long> InsertStudent(long classId, CreateStudentDto model)
         {
-            Student student;
-            StudentClassMap studentClassMap;
 
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
             if (classId < 1)
                 throw new ArgumentNullException(nameof(classId));
 
-            student = new Student
+            var student = new Student
             {
                 Firstname = model.Firstname,
                 Middlename = model.Middlename,
@@ -46,7 +44,7 @@ namespace SchoolHubProfiles.Application.Services.Students
             await _schoolHubDbContext.SaveChangesAsync();
 
             var classMapp = await _classAppService.RetrieveClassById(classId);
-            studentClassMap = new StudentClassMap
+           var studentClassMap = new StudentClassMap
             {
                 ClassId = classMapp.Id,
                 StudentId = student.Id,
@@ -80,6 +78,7 @@ namespace SchoolHubProfiles.Application.Services.Students
                 DateOfRegistration = student.DateOfRegistration,
                 Gender = student.Gender,
                 Age = student.Age,
+                Image = student.Image,
                 IsActive = student.IsActive
             };
             return studentDto;
@@ -106,6 +105,7 @@ namespace SchoolHubProfiles.Application.Services.Students
                     DateOfRegistration = student.DateOfRegistration,
                     Gender = student.Gender,
                     Age = student.Age,
+                    Image = student.Image,
                     IsActive = student.IsActive
                 };
                 students.Add(studentDto);
@@ -116,6 +116,28 @@ namespace SchoolHubProfiles.Application.Services.Students
                 Students = students
             };
             return studentClassResponses;
+        }
+
+        public async Task SavePicture(StudentDto studentDto)
+        {
+            var student = await _schoolHubDbContext.Student.FirstOrDefaultAsync(x => x.Id == studentDto.Id);
+            if (student != null)
+            {
+                student.Id = studentDto.Id;
+                student.Image = studentDto.Image;
+            }
+            _schoolHubDbContext.Entry(student).State = EntityState.Modified;
+            await _schoolHubDbContext.SaveChangesAsync();
+        }
+
+        public async Task<string> RetrievePhotoByStudentId(long studentId)
+        {
+            var student = await _schoolHubDbContext.Student.FirstOrDefaultAsync(x => x.Id == studentId);
+            if (student != null)
+            {
+                return Convert.ToBase64String(student.Image);
+            }
+            return null;
         }
 
         #region IDisposable Support

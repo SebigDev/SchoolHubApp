@@ -77,7 +77,7 @@ namespace SchoolHubProfiles.API
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseStaticFiles();
             app.UseMvc();
 
             app.UseCors(builder => builder.AllowAnyHeader()

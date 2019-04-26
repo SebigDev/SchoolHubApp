@@ -13,6 +13,7 @@ namespace SchoolHubProfiles.Application.Services.Payments
         Task<PaymentResponse> RetrievePaymentById(long id);
         Task<IEnumerable<PaymentResponse>> RetrieveAllPayments();
         Task<IEnumerable<PaymentResponse>> RetrieveAllPaymentsByStudent(long studentId);
+        Task<PaymentResponse> RetrieveFeeByTypeAndStudentId(int feeType, long studentId);
         Task<bool> CancelPayment(long paymentId);
 
         //Amount

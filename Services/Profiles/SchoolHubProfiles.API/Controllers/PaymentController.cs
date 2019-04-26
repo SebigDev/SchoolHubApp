@@ -117,6 +117,22 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpGet]
+        [ProducesResponseType(typeof(PaymentResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RetrieveFeeByTypeAndStudentId(int feeType, long studentId)
+        {
+            try
+            {
+                var payment = await _paymentAppServices.RetrieveFeeByTypeAndStudentId(feeType, studentId);
+                return Ok(payment);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Route("[action]")]
+        [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<AmountDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> RetrieveAllAmount()
         {
