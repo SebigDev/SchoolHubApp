@@ -313,6 +313,8 @@ namespace SchoolHubProfiles.Application.Services.Payments
                     PayAmount = payment.PaymentReport.Amount,
                     PayName = payment.PaymentReport.FeeType
                 };
+
+                //adds the sum of selected payment
                 allPaySum.Add(payDetail);
             }
             var student = await _schoolhubDbContext.Student.FirstOrDefaultAsync(s => s.Id == studentId);
