@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SchoolHubProfiles.API.Controllers
@@ -27,7 +26,7 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        [ProducesResponseType(typeof(long), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(long), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateStaff([FromBody] CreateStaffDto model)
         {
             try
@@ -35,7 +34,7 @@ namespace SchoolHubProfiles.API.Controllers
                 var staff = await _staffAppService.InsertStaff(model);
                 if(staff < 1)
                 {
-                    return BadRequest();
+                    return BadRequest("Staff could not be created");
                 }
                 return Ok(staff);
             }
@@ -55,7 +54,7 @@ namespace SchoolHubProfiles.API.Controllers
             {
                 var staff = await _staffAppService.RetriveStaffById(staffId);
                 if (staff == null)
-                    return NotFound();
+                    return NotFound("Staff does not exist");
                 return Ok(staff);
             }
             catch (Exception ex)
@@ -74,7 +73,7 @@ namespace SchoolHubProfiles.API.Controllers
             {
                 var staff = await _staffAppService.RetriveStaffByUserId(userId);
                 if (staff == null)
-                    return NotFound("No Staff Found");
+                    return NotFound($"No Staff with User Id: {userId} Found");
                 return Ok(staff);
             }
             catch (Exception ex)
@@ -120,10 +119,10 @@ namespace SchoolHubProfiles.API.Controllers
 
         }
 
-        [ApiExplorerSettings(IgnoreApi = true),]
+       // [ApiExplorerSettings(IgnoreApi = true),]
         [Route("[action]")]
         [HttpPost, DisableRequestSizeLimit]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> StaffPhotoUpload(long staffId, IFormFile files)
         {
             try
@@ -133,7 +132,7 @@ namespace SchoolHubProfiles.API.Controllers
 
                 var nStaff = await _staffAppService.RetriveStaffById(staffId);
 
-                string folderName = "Contents\\images";
+                string folderName = @"Contents/images";
                 string webRootPath = _hostingEnvironment.WebRootPath;
                 string newPath = Path.Combine(webRootPath, folderName);
                 if (!Directory.Exists(newPath))
@@ -147,19 +146,18 @@ namespace SchoolHubProfiles.API.Controllers
                     var nFileName = fileName.Replace(fileName, $"{nStaff.Staff.Firstname}-{nStaff.Staff.Lastname}");
                     completeName = nFileName + ext;
                     string fullPath = Path.Combine(newPath, completeName);
-
-                    byte[] imageByte = Encoding.ASCII.GetBytes(fullPath);
+                    var pathToDb = $"{folderName}/{completeName}";
 
                     using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
                          await file.CopyToAsync(stream);
                     }
                     var staff = new StaffDto();
-                    var mStaff = await _staffAppService.RetriveStaffById(staffId);
-                    if (mStaff != null)
+
+                    if (nStaff != null)
                     {
                         staff.Id = staffId;
-                        staff.Image = imageByte;
+                        staff.ImagePath = pathToDb;
                     }
                     await _staffAppService.SavePicture(staff);
                 }
@@ -171,7 +169,7 @@ namespace SchoolHubProfiles.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        //[ApiExplorerSettings(IgnoreApi = true)]
+       // [ApiExplorerSettings(IgnoreApi = true)]
         [Route("[action]")]
         [HttpGet]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
@@ -180,13 +178,18 @@ namespace SchoolHubProfiles.API.Controllers
             try
             {
                 var photo = await _staffAppService.RetriveStaffById(staffId);
+                var ipAddress = HttpContext.Request.Host.ToString();
+                var scheme = HttpContext.Request.Scheme.ToString();
+
+                var contextAddress = $"{scheme}://{ipAddress}";
+                var imagePath = $"{contextAddress}/{photo.Staff.ImagePath}";
+
                 if (photo != null)
-                    return Ok(photo.Staff.Image);
+                    return Ok(imagePath);
                 return BadRequest("No Photo Found");
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex.Message);
             }
         }
@@ -200,7 +203,7 @@ namespace SchoolHubProfiles.API.Controllers
             {
                 var updateStatus = await _staffAppService.UpdateStaff(update);
                 if (updateStatus == false)
-                    return BadRequest("Update Failed");
+                    return BadRequest("Staff Update Failed");
                 return Ok(updateStatus);
             }
             catch (Exception ex)
@@ -212,14 +215,14 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        [ProducesResponseType(typeof(long), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(long), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> AddQualification([FromBody] AddQualificationDto model)
         {
             try
             {
                 var staff = await _staffAppService.AddQualification(model);
                 if (staff < 1)
-                    return BadRequest();
+                    return BadRequest("Qualification could not be added");
                 return Ok(staff);
             }
             catch (Exception ex)
@@ -238,7 +241,7 @@ namespace SchoolHubProfiles.API.Controllers
             {
                 var staff = await _staffAppService.GetQualificationsByStaffId(staffId);
                 if (staff == null)
-                    return NotFound("No Qualification Found");
+                    return NotFound("No Qualifications Found");
                 return Ok(staff);
             }
             catch (Exception ex)

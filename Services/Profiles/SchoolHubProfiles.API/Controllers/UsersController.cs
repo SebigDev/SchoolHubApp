@@ -25,7 +25,7 @@ namespace SchoolHubProfiles.API.Controllers
         
         [Route("[action]")]
         [HttpPost]
-        [ProducesResponseType(typeof(long),(int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(long),(int)HttpStatusCode.OK)]
         public async Task<IActionResult> Register([FromBody] CreateUserDto model)
         {
             try
@@ -43,8 +43,7 @@ namespace SchoolHubProfiles.API.Controllers
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                return BadRequest(ex);
             }
 
         }
@@ -56,13 +55,12 @@ namespace SchoolHubProfiles.API.Controllers
         {
             try
             {
-                UserLoginResponse loginResponse;
 
                 var nUser = await _userAppService.Login(username,email,password);
                 if (nUser == null)
                     return Unauthorized();
                 var token = await _userAppService.GenerateToken(nUser);
-                loginResponse = new UserLoginResponse
+                var loginResponse = new UserLoginResponse
                 {
                     Success = true,
                     Token = token,

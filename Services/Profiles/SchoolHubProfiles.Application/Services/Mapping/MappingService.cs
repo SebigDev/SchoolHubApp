@@ -36,7 +36,7 @@ namespace SchoolHubProfiles.Application.Services.Mapping
         public async Task<long> MappSubjectClass(long classId, CreateSubjectDto createSubjectDto)
         {
             ClassSubjectMap classSubjectMap;
-            var retrieveClass = await _schoolHubDbContext.ClassName.Where(c => c.Id == classId).FirstOrDefaultAsync();
+            var retrieveClass = await _schoolHubDbContext.ClassName.FirstOrDefaultAsync(c => c.Id == classId);
             if(retrieveClass != null)
             {
                 var createSubject = await _subjectAppService.InsertSubject(createSubjectDto);

@@ -23,15 +23,13 @@ namespace SchoolHubProfiles.Application.Services.Payments
 
         public async Task<PaymentResponse> MakePayment(PaymentRequest request)
         {
-            Payment payment;
-            PaymentResponse response;
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
           using(var _transaction = _schoolhubDbContext.Database.BeginTransaction())
           {
                 var nFeeType = (int)request.FeeType;
-                payment = new Payment
+                var payment = new Payment
                 {
                     StudentId = request.StudentId,
                     ClassId = request.ClassId,
@@ -44,7 +42,7 @@ namespace SchoolHubProfiles.Application.Services.Payments
 
                    await _schoolhubDbContext.Payment.AddAsync(payment);
                    await _schoolhubDbContext.SaveChangesAsync();
-                response = new PaymentResponse
+                var response = new PaymentResponse
                 {
                     PayChannel = new PayChannel
                     {
@@ -155,7 +153,7 @@ namespace SchoolHubProfiles.Application.Services.Payments
             if (id < 1)
                 throw new ArgumentNullException(nameof(id));
 
-            var myFee = await _schoolhubDbContext.Payment.Where(s => s.Id == id).FirstOrDefaultAsync();
+            var myFee = await _schoolhubDbContext.Payment.FirstOrDefaultAsync(s => s.Id == id);
             fee = new PaymentResponse
             {
                 PayChannel = new PayChannel
@@ -182,7 +180,7 @@ namespace SchoolHubProfiles.Application.Services.Payments
             if (paymentType < 1)
                 throw new ArgumentNullException(nameof(paymentType));
 
-            var myFee = await _schoolhubDbContext.Payment.Where(s => s.FeeType == feeType).FirstOrDefaultAsync();
+            var myFee = await _schoolhubDbContext.Payment.FirstOrDefaultAsync(s => s.FeeType == feeType);
             fee = new PaymentResponse
             {
                 PayChannel = new PayChannel
@@ -205,7 +203,7 @@ namespace SchoolHubProfiles.Application.Services.Payments
         {
             var type = (FeeType)feeType;
 
-            var fee = await _schoolhubDbContext.Payment.Where(p => p.FeeType == type && p.StudentId == studentId).FirstOrDefaultAsync();
+            var fee = await _schoolhubDbContext.Payment.FirstOrDefaultAsync(p => p.FeeType == type && p.StudentId == studentId);
             if(fee != null)
             {
                 var response = new PaymentResponse
@@ -257,7 +255,7 @@ namespace SchoolHubProfiles.Application.Services.Payments
                 throw new ArgumentNullException(nameof(feeType));
 
             var nFeeType = (FeeType)feeType;
-            var amount = await _schoolhubDbContext.Amount.Where(a => a.ClassId == classId && a.FeeType == nFeeType).FirstOrDefaultAsync();
+            var amount = await _schoolhubDbContext.Amount.FirstOrDefaultAsync(a => a.ClassId == classId && a.FeeType == nFeeType);
             if (amount == null)
                 return 0;
             return amount.FeeAmount;
@@ -283,7 +281,7 @@ namespace SchoolHubProfiles.Application.Services.Payments
             if (amountDto == null)
                 throw new ArgumentNullException(nameof(amountDto));
 
-            var amountUpdate = await _schoolhubDbContext.Amount.Where(s => s.Id == amountDto.Id).FirstOrDefaultAsync();
+            var amountUpdate = await _schoolhubDbContext.Amount.FirstOrDefaultAsync(s => s.Id == amountDto.Id);
             if (amountUpdate != null)
             {
                 amountUpdate.Id = amountDto.Id;
@@ -319,7 +317,7 @@ namespace SchoolHubProfiles.Application.Services.Payments
             }
             var student = await _schoolhubDbContext.Student.FirstOrDefaultAsync(s => s.Id == studentId);
             var studentClassMap = await _schoolhubDbContext.StudentClassMap.FirstOrDefaultAsync(s => s.StudentId == studentId);
-            var studentClass = await _schoolhubDbContext.ClassName.Where(x => x.Id == studentClassMap.ClassId).FirstOrDefaultAsync();
+            var studentClass = await _schoolhubDbContext.ClassName.FirstOrDefaultAsync(x => x.Id == studentClassMap.ClassId);
             var summaryResponse = new PaymentSummaryResponse
             {
                 StudentFullname = $"{student.Firstname} {student.Lastname}",

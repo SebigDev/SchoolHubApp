@@ -184,7 +184,7 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpPut]
-        [ProducesResponseType(typeof(int), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> UpdateAmount([FromBody] AmountDto amountDto)
         {
             try
@@ -203,7 +203,7 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        [ProducesResponseType(typeof(PaymentResponse), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(PaymentResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> MakePayment([FromBody] PaymentRequest request)
         {
             try

@@ -202,7 +202,7 @@ namespace SchoolHubProfiles.Core.Migrations
 
                     b.Property<int>("Gender");
 
-                    b.Property<byte[]>("Image");
+                    b.Property<string>("ImagePath");
 
                     b.Property<bool?>("IsActive");
 
@@ -239,7 +239,7 @@ namespace SchoolHubProfiles.Core.Migrations
 
                     b.Property<string>("Gender");
 
-                    b.Property<byte[]>("Image");
+                    b.Property<string>("ImagePath");
 
                     b.Property<bool?>("IsActive");
 

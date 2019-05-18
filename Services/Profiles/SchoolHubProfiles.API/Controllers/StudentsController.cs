@@ -28,7 +28,7 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        [ProducesResponseType(typeof(long), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(long), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateStudent([FromQuery] long classId,[FromBody] CreateStudentDto createStudentDto)
         {
             try
@@ -84,7 +84,7 @@ namespace SchoolHubProfiles.API.Controllers
         [ApiExplorerSettings(IgnoreApi = true),]
         [Route("[action]")]
         [HttpPost, DisableRequestSizeLimit]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> StudentPhotoUpload(long studentId, IFormFile files)
         {
             try
@@ -109,8 +109,6 @@ namespace SchoolHubProfiles.API.Controllers
                     completeName = nFileName + ext;
                     string fullPath = Path.Combine(newPath, completeName);
 
-                    byte[] imagePath = Encoding.ASCII.GetBytes(fullPath);
-
                     using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
@@ -120,7 +118,7 @@ namespace SchoolHubProfiles.API.Controllers
                     if (mStudent != null)
                     {
                         mStudent.Id = studentId;
-                        mStudent.Image = imagePath;
+                        mStudent.ImagePath = fullPath;
                     }
                     await _studentAppService.SavePicture(mStudent);
                 }
@@ -134,15 +132,20 @@ namespace SchoolHubProfiles.API.Controllers
         }
 
         [Route("[action]")]
-        [HttpGet, DisableRequestSizeLimit]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
+        [HttpGet]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> RetrievePhotoByStudentId(long studentId)
        {
             try
             {
                 var photo = await _studentAppService.RetrievePhotoByStudentId(studentId);
-                return Ok(photo);
-            }
+                if(photo != null)
+                {
+                   
+                    return Ok(photo);
+                }
+                return BadRequest("No image found");
+            } 
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);

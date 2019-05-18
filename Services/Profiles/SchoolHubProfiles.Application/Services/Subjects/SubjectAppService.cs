@@ -116,8 +116,7 @@ namespace SchoolHubProfiles.Application.Services.Subjects
         {
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
-            var retrieveForUpdate = await _schoolHubDbContext.Subject
-                                         .Where(s => s.Id == model.Id).FirstOrDefaultAsync();
+            var retrieveForUpdate = await _schoolHubDbContext.Subject.FirstOrDefaultAsync(s => s.Id == model.Id);
             if (retrieveForUpdate != null)
             {
                 retrieveForUpdate.Id = model.Id;

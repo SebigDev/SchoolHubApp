@@ -29,9 +29,7 @@ namespace SchoolHubProfiles.Application.Services.Authentication
         public async Task<AuthResponse> ChangePassword(string email, string oldPassword, string newPassword)
         {
 
-            var checkUser = await _schoolHubDbContext.User
-                                    .Where(u => u.EmailAddress == email && u.Password == oldPassword && u.IsEmailConfirmed == false)
-                                    .FirstOrDefaultAsync();
+            var checkUser = await _schoolHubDbContext.User.FirstOrDefaultAsync(u => u.EmailAddress == email && u.Password == oldPassword && u.IsEmailConfirmed == false);
 
             CreatePasswordEncrypt(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -41,7 +39,7 @@ namespace SchoolHubProfiles.Application.Services.Authentication
                 checkUser.PasswordHash = passwordHash;
                 checkUser.PasswordSalt = passwordSalt;
                 checkUser.IsEmailConfirmed = true;
-            };
+            }
             _schoolHubDbContext.Entry(checkUser).State = EntityState.Modified;
             await _schoolHubDbContext.SaveChangesAsync();
 
@@ -61,7 +59,7 @@ namespace SchoolHubProfiles.Application.Services.Authentication
 
         public async Task<bool> ResetPassword(ResetPasswordRequest request)
         {
-            var getUser = await _schoolHubDbContext.User.Where(x => x.Id == request.UserId && x.IsEmailConfirmed == true).FirstOrDefaultAsync();
+            var getUser = await _schoolHubDbContext.User.FirstOrDefaultAsync(x => x.Id == request.UserId && x.IsEmailConfirmed == true);
             if(getUser != null)
             {
                 getUser.Password = request.Password;

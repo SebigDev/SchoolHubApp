@@ -25,7 +25,7 @@ namespace SchoolHubProfiles.Core.DTOs.Staffs
 
         public string UserType { get; set; }
 
-        public byte[] Image { get; set; }
+        public string ImagePath { get; set; }
     }
 }
                 

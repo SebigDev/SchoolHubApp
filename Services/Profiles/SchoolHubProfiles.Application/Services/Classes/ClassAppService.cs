@@ -55,8 +55,7 @@ namespace SchoolHubProfiles.Application.Services.Classes
         {
             StaffClassAssIgnedResponse response;
             var classDto = new List<ClassDto>();
-            var retrieveClassForStaff = await _schoolHubDbContext.StaffClassMap
-                                .Where(x => x.StaffId == staffId).ToListAsync();
+            var retrieveClassForStaff = await _schoolHubDbContext.StaffClassMap.Where(x => x.StaffId == staffId).ToListAsync();
             if(retrieveClassForStaff.Count() > 0)
             {
                 foreach(var classStaff in retrieveClassForStaff)
@@ -173,8 +172,7 @@ namespace SchoolHubProfiles.Application.Services.Classes
         {
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
-            var retrieveForUpdate = await _schoolHubDbContext.ClassName
-                                         .Where(s => s.Id == model.Id).FirstOrDefaultAsync();
+            var retrieveForUpdate = await _schoolHubDbContext.ClassName.FirstOrDefaultAsync(s => s.Id == model.Id);
             if(retrieveForUpdate != null)
             {
                 retrieveForUpdate.Id = model.Id;

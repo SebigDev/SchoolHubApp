@@ -22,7 +22,7 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        [ProducesResponseType(typeof(long), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(long), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateClass(CreateClassDto createClassDto)
         {
             try
@@ -43,7 +43,7 @@ namespace SchoolHubProfiles.API.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        [ProducesResponseType(typeof(long), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(long), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> AssignClassToStaff(long staffId, long classId)
         {
             try
@@ -163,8 +163,7 @@ namespace SchoolHubProfiles.API.Controllers
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                return BadRequest(ex);
             }
         }
 
@@ -180,7 +179,7 @@ namespace SchoolHubProfiles.API.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                return BadRequest(ex);
             }
         }
     }

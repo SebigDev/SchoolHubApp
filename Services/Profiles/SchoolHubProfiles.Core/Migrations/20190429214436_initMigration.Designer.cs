@@ -10,8 +10,8 @@ using SchoolHubProfiles.Core.Context;
 namespace SchoolHubProfiles.Core.Migrations
 {
     [DbContext(typeof(SchoolHubDbContext))]
-    [Migration("20190420142350_initMig")]
-    partial class initMig
+    [Migration("20190429214436_initMigration")]
+    partial class initMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -204,6 +204,8 @@ namespace SchoolHubProfiles.Core.Migrations
 
                     b.Property<int>("Gender");
 
+                    b.Property<byte[]>("Image");
+
                     b.Property<bool?>("IsActive");
 
                     b.Property<bool>("IsUpdate");
@@ -211,8 +213,6 @@ namespace SchoolHubProfiles.Core.Migrations
                     b.Property<string>("Lastname");
 
                     b.Property<string>("Middlename");
-
-                    b.Property<byte[]>("Photo");
 
                     b.Property<long>("UserId");
 
@@ -241,6 +241,8 @@ namespace SchoolHubProfiles.Core.Migrations
 
                     b.Property<string>("Gender");
 
+                    b.Property<byte[]>("Image");
+
                     b.Property<bool?>("IsActive");
 
                     b.Property<bool>("IsUpdate");
@@ -248,8 +250,6 @@ namespace SchoolHubProfiles.Core.Migrations
                     b.Property<string>("Lastname");
 
                     b.Property<string>("Middlename");
-
-                    b.Property<byte[]>("Photo");
 
                     b.HasKey("Id");
 

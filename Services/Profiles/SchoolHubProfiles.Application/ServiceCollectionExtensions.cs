@@ -19,11 +19,9 @@ namespace SchoolHubProfiles.Application
             services.AddTransient<IStaffAppService, StaffAppService>();
             services.AddTransient<IAuthenticationAppService, AuthenticationAppService>();
             services.AddTransient<IClassAppService, ClassAppService>();
-            services.AddTransient<ISubjectAppService,SubjectAppService>();
+            services.AddTransient<ISubjectAppService, SubjectAppService>();
             services.AddTransient<IStudentAppService, StudentAppService>();
             services.AddTransient<IPaymentAppServices, PaymentAppServices>();
-
-
             return services;
         }
     }

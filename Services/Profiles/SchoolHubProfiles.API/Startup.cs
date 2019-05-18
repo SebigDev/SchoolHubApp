@@ -62,7 +62,13 @@ namespace SchoolHubProfiles.API
             //Notification Services
             services.AddSchoolHubNotification();
             services.AddSchoolHubProfileApplication();
-            services.AddSwaggerDocument();
+            services.AddSwaggerDocument(document => 
+            {
+                document.DocumentName = "SchoolHub API";
+                document.Description = "API Endpoints for SchoolHub Management";
+                document.Title = "SchoolHub Application API";
+                document.Version = "1.0";
+            });
 
 
         }
@@ -77,15 +83,12 @@ namespace SchoolHubProfiles.API
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseStaticFiles();
-            app.UseMvc();
+          
 
             app.UseCors(builder => builder.AllowAnyHeader()
                                     .AllowAnyMethod()
                                     .AllowAnyOrigin()
                                     .AllowCredentials());
-
-            app.UseHttpsRedirection();
 
             // Middleware  
             if (env.IsDevelopment())
@@ -93,6 +96,12 @@ namespace SchoolHubProfiles.API
                 app.UseSwagger();
                 app.UseSwaggerUi3();
             }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseMvc();
+
+           
         }
     }
 }

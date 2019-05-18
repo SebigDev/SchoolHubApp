@@ -57,7 +57,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                     DateOfBirth = model.DateOfBirth,
                     DateEmployed = model.DateEmployed,
                     Gender =  model.Gender,
-                    UserType = model.UserType,
+                    UserType = user.UserType,
                     IsUpdate = true,
                     IsActive = true,
                 };
@@ -111,7 +111,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 Gender = s.Gender.GetDescription(),
                 IsActive = s.IsActive,
                 IsUpdate = s.IsUpdate,
-                Image = s.Image,
+                ImagePath = s.ImagePath,
             }));
             return staffDto;
         }
@@ -132,7 +132,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 UserType = s.UserType.GetDescription(),
                 IsActive = s.IsActive,
                 IsUpdate = s.IsUpdate,
-                Image = s.Image,
+                ImagePath = s.ImagePath,
             }));
             return staffDto;
         }
@@ -157,7 +157,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 IsActive = staff.IsActive,
                 IsUpdate = staff.IsUpdate,
                 UserType = staff.UserType.GetDescription(),
-                Image = staff.Image,
+                ImagePath = staff.ImagePath,
             };
             var qualDto = await GetQualificationsByStaffId(Id);
             var response = new StaffQualificationResponse
@@ -176,7 +176,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
             if(staff != null)
             {
                 staff.Id = staffDto.Id;
-                staff.Image = staffDto.Image;
+                staff.ImagePath = staffDto.ImagePath;
             }
             _schoolHubDbContext.Entry(staff).State = EntityState.Modified;
             await _schoolHubDbContext.SaveChangesAsync();
@@ -184,12 +184,11 @@ namespace SchoolHubProfiles.Application.Services.Staffs
 
         public async Task<StaffQualificationResponse> RetriveStaffByUserId(long userId)
         {
-            StaffDto staffDto;
 
             var staff = await _schoolHubDbContext.Staff.FirstOrDefaultAsync(x => x.UserId == userId);
             if (staff == null)
                 return null;
-            staffDto = new StaffDto
+            var staffDto = new StaffDto
             {
                 Id = staff.Id,
                 UserId = staff.UserId,
@@ -202,9 +201,10 @@ namespace SchoolHubProfiles.Application.Services.Staffs
                 IsActive = staff.IsActive,
                 IsUpdate = staff.IsUpdate,
                 UserType = staff.UserType.GetDescription(),
-                Image = staff.Image,
+                ImagePath = staff.ImagePath,
             };
             var qualDto = await GetQualificationsByStaffId(staff.Id);
+
             var response = new StaffQualificationResponse
             {
                 Staff = staffDto,
@@ -212,9 +212,7 @@ namespace SchoolHubProfiles.Application.Services.Staffs
             };
 
             return response;
-
         }
-
 
         public async Task<int> AddQualification(AddQualificationDto model)
         {

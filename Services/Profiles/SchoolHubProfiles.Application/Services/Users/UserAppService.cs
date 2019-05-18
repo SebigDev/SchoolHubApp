@@ -90,7 +90,7 @@ namespace SchoolHubProfiles.Application.Services.Users
 
         public async Task<bool> DeleteUser(long Id)
         {
-            var delete = await _schoolHubDbContext.User.Where(s => s.Id == Id).FirstOrDefaultAsync();
+            var delete = await _schoolHubDbContext.User.FirstOrDefaultAsync(s => s.Id == Id);
             if (delete != null)
             {
                 _schoolHubDbContext.Remove(delete);
@@ -122,11 +122,10 @@ namespace SchoolHubProfiles.Application.Services.Users
         {
             if (Id < 1)
                 throw new ArgumentNullException(nameof(Id));
-            UserDto userDto;
             var user = await _schoolHubDbContext.User.FirstOrDefaultAsync(x => x.Id == Id);
             if(user != null)
             {
-                userDto = new UserDto
+                var userDto = new UserDto
                 {
                     Id = user.Id,
                     EmailAddress = user.EmailAddress,
@@ -143,11 +142,10 @@ namespace SchoolHubProfiles.Application.Services.Users
 
         public async Task<UserDto> GetUserByEmailAddress(string email)
         {
-            UserDto userDto;
-            var checkUser = await _schoolHubDbContext.User.Where(e => e.EmailAddress == email).FirstOrDefaultAsync();
+            var checkUser = await _schoolHubDbContext.User.FirstOrDefaultAsync(e => e.EmailAddress == email);
             if (checkUser != null)
             {
-                userDto = new UserDto
+                var userDto = new UserDto
                 {
                     Id = checkUser.Id,
                     EmailAddress = checkUser.EmailAddress,

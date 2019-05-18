@@ -26,6 +26,6 @@ namespace SchoolHubProfiles.Core.DTOs.Students
 
         public DateTime? DateUpdated { get; set; }
 
-        public byte[] Image { get; set; }
+        public string ImagePath { get; set; }
     }
 }

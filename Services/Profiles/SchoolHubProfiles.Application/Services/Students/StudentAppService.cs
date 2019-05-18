@@ -78,7 +78,7 @@ namespace SchoolHubProfiles.Application.Services.Students
                 DateOfRegistration = student.DateOfRegistration,
                 Gender = student.Gender,
                 Age = student.Age,
-                Image = student.Image,
+                ImagePath = student.ImagePath,
                 IsActive = student.IsActive
             };
             return studentDto;
@@ -90,8 +90,7 @@ namespace SchoolHubProfiles.Application.Services.Students
             var students = new List<StudentDto>();
             StudentDto studentDto;
 
-            var studentsMap = await _schoolHubDbContext.StudentClassMap
-                                                  .Where(x => x.ClassId == classId).ToListAsync();
+            var studentsMap = await _schoolHubDbContext.StudentClassMap.Where(x => x.ClassId == classId).ToListAsync();
             foreach(var studentMap in studentsMap)
             {
                 var student = await _schoolHubDbContext.Student.FirstOrDefaultAsync(x => x.Id == studentMap.StudentId);
@@ -105,7 +104,7 @@ namespace SchoolHubProfiles.Application.Services.Students
                     DateOfRegistration = student.DateOfRegistration,
                     Gender = student.Gender,
                     Age = student.Age,
-                    Image = student.Image,
+                    ImagePath = student.ImagePath,
                     IsActive = student.IsActive
                 };
                 students.Add(studentDto);
@@ -124,7 +123,7 @@ namespace SchoolHubProfiles.Application.Services.Students
             if (student != null)
             {
                 student.Id = studentDto.Id;
-                student.Image = studentDto.Image;
+                student.ImagePath = studentDto.ImagePath;
             }
             _schoolHubDbContext.Entry(student).State = EntityState.Modified;
             await _schoolHubDbContext.SaveChangesAsync();
@@ -135,7 +134,7 @@ namespace SchoolHubProfiles.Application.Services.Students
             var student = await _schoolHubDbContext.Student.FirstOrDefaultAsync(x => x.Id == studentId);
             if (student != null)
             {
-                return Convert.ToBase64String(student.Image);
+                return student.ImagePath;
             }
             return null;
         }
