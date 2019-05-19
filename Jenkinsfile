@@ -16,8 +16,8 @@ node {
     }
 
     stage('Build'){
-        def mavenHome  = tool 'myMaven'
-        def pathMaven = "${mavenHome}/bin:${env.PATH}" 
+        def mavenHome  = tool name: 'myMaven', type: 'maven'
+        def pathMaven = "${mavenHome}/bin/mvn" 
         bat "${pathMaven} clean package" 
     }
 
