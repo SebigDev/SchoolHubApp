@@ -68,6 +68,7 @@ namespace SchoolHubProfiles.API
                 document.Description = "API Endpoints for SchoolHub Management";
                 document.Title = "SchoolHub Application API";
                 document.Version = "1.0";
+
             });
 
 
