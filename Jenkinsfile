@@ -16,7 +16,7 @@ node {
     }
 
     stage('Build'){
-      bat "C:\Program Files (x86)\Jenkins\tools\hudson.tasks.Maven_MavenInstallation\myMaven\bin\mvn clean package" 
+      bat "C:\Program Files (x86)\Jenkins\tools\hudson.tasks.Maven_MavenInstallation\myMaven/bin/mvn clean package" 
     }
 
     stage("Image Prune"){
