@@ -1,0 +1,22 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:2.1
+ARG BUILD_CONFIGURATION=Debug
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+EXPOSE 80
+
+WORKDIR /src
+COPY ["BuildingBlocks/SchoolHub.Core/SchoolHub.Core.csproj", "BuildingBlocks/SchoolHub.Core/"]
+COPY ["BuildingBlocks/SchoolHub.Data/SchoolHub.Data.csproj", "BuildingBlocks/SchoolHub.Data/"]
+COPY ["BuildingBlocks/SchoolHub.Notification/SchoolHub.Notification.csproj", "BuildingBlocks/SchoolHub.Notification/"]
+COPY ["Services/Profiles/SchoolHubProfiles.API/SchoolHubProfiles.API.csproj", "Services/Profiles/SchoolHubProfiles.API/"]
+COPY ["Services/Profiles/SchoolHubProfiles.Application/SchoolHubProfiles.Application.csproj", "Services/Profiles/SchoolHubProfiles.Application/"]
+COPY ["Services/Profiles/SchoolHubProfiles.Core/SchoolHubProfiles.Core.csproj", "Services/Profiles/SchoolHubProfiles.Core/"]
+
+RUN dotnet restore "Services/Profiles/SchoolHubProfiles.API/SchoolHubProfiles.API.csproj"
+COPY . .
+WORKDIR "/src/Services/Profiles/SchoolHubProfiles.API"
+RUN dotnet build --no-restore "SchoolHubProfiles.API.csproj" -c $BUILD_CONFIGURATION
+
+RUN echo "exec dotnet run --no-build --no-launch-profile -c $BUILD_CONFIGURATION --" > /entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
