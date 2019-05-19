@@ -16,7 +16,9 @@ node {
     }
 
     stage('Build'){
-        bat "mvn clean install"
+        def mavenHome  = tool 'myMaven'
+        def pathMaven = "${mavenHome}/bin:${env.PATH}" 
+        bat "${pathMaven} clean package" 
     }
 
     stage("Image Prune"){
