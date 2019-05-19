@@ -185,7 +185,10 @@ namespace SchoolHubProfiles.API.Controllers
                 var imagePath = $"{contextAddress}/{photo.Staff.ImagePath}";
 
                 if (photo != null)
+                {
                     return Ok(imagePath);
+                }
+                   
                 return BadRequest("No Photo Found");
             }
             catch (Exception ex)
