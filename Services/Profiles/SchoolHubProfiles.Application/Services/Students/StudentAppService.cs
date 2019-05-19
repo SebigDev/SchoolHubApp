@@ -55,9 +55,24 @@ namespace SchoolHubProfiles.Application.Services.Students
 
             return student.Id;
         }
-        public Task<IEnumerable<StudentDto>> RetrieveAllStudents()
+        public async Task<IEnumerable<StudentDto>> RetrieveAllStudents()
         {
-            throw new NotImplementedException();
+            var allStudent = await _schoolHubDbContext.Student.ToListAsync();
+            var allStudentDto = new List<StudentDto>();
+            allStudentDto.AddRange(allStudent.OrderBy(s => s.Id).Select(x => new StudentDto()
+            {
+                Id = x.Id,
+                Firstname = x.Firstname,
+                Middlename = x.Middlename,
+                Lastname = x.Lastname,
+                DateOfBirth = x.DateOfBirth,
+                DateOfRegistration = x.DateOfRegistration,
+                Gender = x.Gender,
+                Age = x.Age,
+                ImagePath = x.ImagePath,
+                IsActive = x.IsActive
+            }));
+            return allStudentDto;
         }
 
         public async Task<StudentDto> RetrieveStudentById(long id)
