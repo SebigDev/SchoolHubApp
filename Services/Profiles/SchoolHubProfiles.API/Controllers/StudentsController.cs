@@ -94,7 +94,7 @@ namespace SchoolHubProfiles.API.Controllers
 
                 var nStudent = await _studentAppService.RetrieveStudentById(studentId);
 
-                string folderName = "Contents\\images";
+                string folderName = @"Contents/images";
                 string webRootPath = _hostingEnvironment.WebRootPath;
                 string newPath = Path.Combine(webRootPath, folderName);
                 if (!Directory.Exists(newPath))
@@ -108,19 +108,19 @@ namespace SchoolHubProfiles.API.Controllers
                     var nFileName = fileName.Replace(fileName, $"{nStudent.Firstname}-{nStudent.Lastname}");
                     completeName = nFileName + ext;
                     string fullPath = Path.Combine(newPath, completeName);
+                    var pathToDb = $"{folderName}/{completeName}";
 
                     using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
                     }
-                    var student = new StudentDto();
-                    var mStudent = nStudent;
-                    if (mStudent != null)
+
+                    if (nStudent != null)
                     {
-                        mStudent.Id = studentId;
-                        mStudent.ImagePath = fullPath;
+                        nStudent.Id = studentId;
+                        nStudent.ImagePath = pathToDb;
                     }
-                    await _studentAppService.SavePicture(mStudent);
+                    await _studentAppService.SavePicture(nStudent);
                 }
 
                 return Ok(completeName);
@@ -140,8 +140,7 @@ namespace SchoolHubProfiles.API.Controllers
             {
                 var photo = await _studentAppService.RetrievePhotoByStudentId(studentId);
                 if(photo != null)
-                {
-                   
+                { 
                     return Ok(photo);
                 }
                 return BadRequest("No image found");
