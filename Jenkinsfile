@@ -16,7 +16,9 @@ node {
     }
 
     stage('Build'){
-      bat "C:\Program Files (x86)\Jenkins\tools\hudson.tasks.Maven_MavenInstallation\myMaven/bin/mvn clean package" 
+      def mavenpath = tool name: "myMaven", type: "maven"
+        def myPath = "${mavenpath}/bin/mvn"
+        bat "${myPath} clean package"
     }
 
     stage("Image Prune"){
