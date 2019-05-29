@@ -15,11 +15,7 @@ node {
         checkout scm
     }
 
-    stage('Build'){
-      def mavenpath = tool name: "myMaven", type: "maven"
-        def myPath = "${mavenpath}/bin/mvn"
-        sh "${myPath} clean package"
-    }
+  
 
     stage("Image Prune"){
         imagePrune(CONTAINER_NAME)
